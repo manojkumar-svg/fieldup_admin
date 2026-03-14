@@ -1,0 +1,272 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  OPERATIONS_MANAGER
+}
+
+enum EntityStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SportType {
+  CRICKET
+  FOOTBALL
+  BASKETBALL
+  TENNIS
+  BADMINTON
+  SWIMMING
+  HOCKEY
+  VOLLEYBALL
+  TABLE_TENNIS
+  SQUASH
+  AQUATICS
+  ARCHERY
+  ATHLETICS
+  BEACH_VOLLEYBALL
+  BOXING
+  BREAKING
+  CANOEING
+  CYCLING
+  EQUESTRIAN
+  FENCING
+  GOLF
+  GYMNASTICS
+  HANDBALL
+  JUDO
+  KARATE
+  MMA
+  MODERN_PENTATHLON
+  PICKLEBALL
+  ROWING
+  RUGBY_SEVENS
+  SAILING
+  SHOOTING
+  SKATEBOARDING
+  SPORT_CLIMBING
+  SURFING
+  TAEKWONDO
+  TRIATHLON
+  UFC
+  WEIGHTLIFTING
+  WRESTLING
+  OTHER
+}
+
+enum PartnerType {
+  VENUE
+  COACH
+  ACADEMY
+}
+
+enum OnboardingStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum SurfaceType {
+  SYNTHETIC
+  WOODEN
+  CLAY
+  TURF
+  CONCRETE
+}
+
+enum SlotDuration {
+  THIRTY_MINS
+  SIXTY_MINS
+  NINETY_MINS
+}
+
+enum DayOfWeek {
+  MON
+  TUE
+  WED
+  THU
+  FRI
+  SAT
+  SUN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         UserRole @default(OPERATIONS_MANAGER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Court {
+  id           String       @id @default(cuid())
+  name         String
+  sportType    SportType
+  description  String?
+  address      String
+  city         String
+  state        String
+  pincode      String
+  latitude     Float?
+  longitude    Float?
+  capacity     Int
+  pricePerHour Float
+  images       String[]
+  amenities    String[]
+  openTime     String
+  closeTime    String
+  status       EntityStatus @default(ACTIVE)
+  contactPhone String?
+  contactEmail String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([sportType])
+  @@index([status])
+  @@index([city])
+  @@map("courts")
+}
+
+model Academy {
+  id              String       @id @default(cuid())
+  name            String
+  description     String?
+  sportsOffered   SportType[]
+  address         String
+  city            String
+  state           String
+  pincode         String
+  latitude        Float?
+  longitude       Float?
+  contactPhone    String
+  contactEmail    String?
+  website         String?
+  images          String[]
+  establishedYear Int?
+  status          EntityStatus @default(ACTIVE)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  trainers AcademyTrainer[]
+
+  @@index([status])
+  @@index([city])
+  @@map("academies")
+}
+
+model Trainer {
+  id                  String       @id @default(cuid())
+  name                String
+  email               String?
+  phone               String
+  sportSpecialization SportType
+  experience          Int
+  certifications      String[]
+  hourlyRate          Float
+  bio                 String?
+  photo               String?
+  city                String
+  state               String
+  status              EntityStatus @default(ACTIVE)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  academies AcademyTrainer[]
+
+  @@index([sportSpecialization])
+  @@index([status])
+  @@index([city])
+  @@map("trainers")
+}
+
+model AcademyTrainer {
+  id        String   @id @default(cuid())
+  academyId String
+  trainerId String
+  joinedAt  DateTime @default(now())
+
+  academy Academy @relation(fields: [academyId], references: [id], onDelete: Cascade)
+  trainer Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+
+  @@unique([academyId, trainerId])
+  @@map("academy_trainers")
+}
+
+model OnboardingApplication {
+  id        String           @id @default(cuid())
+  status    OnboardingStatus @default(PENDING)
+
+  // Section 1: Basic Details
+  partnerType   PartnerType
+  businessName  String
+  contactPerson String
+  phone         String
+  email         String
+  city          String
+  fullAddress   String
+  googleMapsLink String?
+
+  // Section 2: Sports & Services
+  sportsOffered    SportType[]
+  experienceYears  Int?
+  certifications   String[]   // file URLs
+  shortBio         String?
+
+  // Section 3: Facility Details (Venues)
+  numberOfCourts   Int?
+  surfaceType      SurfaceType?
+  facilities       String[]
+
+  // Section 3: Training Details (Coaches)
+  sessionTypes     String[]
+  maxStudents      Int?
+
+  // Section 4: Availability
+  availableDays    DayOfWeek[]
+  operatingHours   String?     // e.g. "6 AM - 10 PM"
+  slotDuration     SlotDuration?
+
+  // Section 5: Pricing
+  pricePerSlot         Float?
+  weekendPricingDiff   Boolean  @default(false)
+  cancellationAllowed  Boolean  @default(false)
+
+  // Section 6: Payment & Legal
+  acceptsCash      Boolean @default(false)
+  bankAccountName  String?
+  bankAccountNumber String?
+  ifscCode         String?
+  gstNumber        String?
+  idProofUrls      String[]
+  profilePhotoUrls String[]
+
+  // Section 7: Agreement
+  termsAccepted    Boolean @default(false)
+
+  // Admin fields
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  rejectionReason String?
+  notes         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([partnerType])
+  @@index([city])
+  @@index([createdAt])
+  @@map("onboarding_applications")
+}
