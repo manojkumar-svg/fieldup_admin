@@ -7,6 +7,14 @@ export function cn(...inputs: ClassValue[]): string {
 
 export const ITEMS_PER_PAGE = 10;
 
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
 export const SPORT_TYPE_LABELS: Record<string, string> = {
   CRICKET: 'Cricket',
   FOOTBALL: 'Football',

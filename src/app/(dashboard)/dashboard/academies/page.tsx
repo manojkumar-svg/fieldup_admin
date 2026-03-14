@@ -212,7 +212,7 @@ export default function AcademiesPage(): React.ReactElement {
                   <tr
                     key={academy.id}
                     className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 cursor-pointer transition-colors"
-                    onClick={() => router.push(`/dashboard/academies/${academy.id}/edit`)}
+                    onClick={() => router.push(`/dashboard/academies/${academy.id}`)}
                   >
                     <td className="px-5 py-3.5 text-sm font-medium text-gray-900">{academy.name}</td>
                     <td className="px-5 py-3.5">
@@ -280,7 +280,7 @@ export default function AcademiesPage(): React.ReactElement {
               <div
                 key={academy.id}
                 className="rounded-2xl border border-gray-200/80 bg-white p-4 active:bg-gray-50 transition-colors"
-                onClick={() => router.push(`/dashboard/academies/${academy.id}/edit`)}
+                onClick={() => router.push(`/dashboard/academies/${academy.id}`)}
               >
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="min-w-0">

@@ -218,7 +218,7 @@ export default function VenuesPage(): React.ReactElement {
                     <tr
                       key={venue.id}
                       className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 cursor-pointer transition-colors"
-                      onClick={() => router.push(`/dashboard/venues/${venue.id}/edit`)}
+                      onClick={() => router.push(`/dashboard/venues/${venue.id}`)}
                     >
                       <td className="px-5 py-3.5 text-sm font-medium text-gray-900">{venue.name}</td>
                       <td className="px-5 py-3.5 text-sm text-gray-500">{venue.city}</td>
@@ -282,7 +282,7 @@ export default function VenuesPage(): React.ReactElement {
                 <div
                   key={venue.id}
                   className="rounded-2xl border border-gray-200/80 bg-white p-4 active:bg-gray-50 transition-colors"
-                  onClick={() => router.push(`/dashboard/venues/${venue.id}/edit`)}
+                  onClick={() => router.push(`/dashboard/venues/${venue.id}`)}
                 >
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="min-w-0">

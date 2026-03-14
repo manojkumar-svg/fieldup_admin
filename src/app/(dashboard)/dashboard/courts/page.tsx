@@ -227,7 +227,7 @@ export default function CourtsPage(): React.ReactElement {
                   <tr
                     key={court.id}
                     className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 cursor-pointer transition-colors"
-                    onClick={() => router.push(`/dashboard/courts/${court.id}/edit`)}
+                    onClick={() => router.push(`/dashboard/courts/${court.id}`)}
                   >
                     <td className="px-5 py-3.5">
                       <div>
@@ -285,7 +285,7 @@ export default function CourtsPage(): React.ReactElement {
               <div
                 key={court.id}
                 className="rounded-2xl border border-gray-200/80 bg-white p-4 active:bg-gray-50 transition-colors"
-                onClick={() => router.push(`/dashboard/courts/${court.id}/edit`)}
+                onClick={() => router.push(`/dashboard/courts/${court.id}`)}
               >
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="min-w-0">
