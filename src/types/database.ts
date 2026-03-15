@@ -107,7 +107,6 @@ export interface Court {
   pricePerHour: number;
   maxPlayers: number;
   images: string[];
-  documents: string[];
   status: EntityStatus;
   createdAt: string;
   updatedAt: string;

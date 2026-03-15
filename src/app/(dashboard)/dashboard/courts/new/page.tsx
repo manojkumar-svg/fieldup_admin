@@ -63,7 +63,6 @@ export default function NewCourtPage(): React.ReactElement {
       maxPlayers: 10,
       pricePerHour: 0,
       images: [],
-      documents: [],
     },
   });
 
@@ -155,7 +154,7 @@ export default function NewCourtPage(): React.ReactElement {
         </Card>
 
         <Card variant="bordered">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Images & Documents</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Images</h2>
           <div className="space-y-6">
             <Controller
               name="images"
@@ -169,21 +168,6 @@ export default function NewCourtPage(): React.ReactElement {
                   accept="image/*"
                   maxFiles={10}
                   hint="Upload photos of the court (max 10)"
-                />
-              )}
-            />
-            <Controller
-              name="documents"
-              control={control}
-              render={({ field }) => (
-                <FileUpload
-                  label="Documents"
-                  value={field.value ?? []}
-                  onChange={field.onChange}
-                  type="document"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                  maxFiles={5}
-                  hint="Court-related documents (max 5)"
                 />
               )}
             />

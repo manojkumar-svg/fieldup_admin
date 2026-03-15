@@ -112,7 +112,6 @@ export const courtSchema = z.object({
   pricePerHour: z.coerce.number().min(0, 'Price must be non-negative'),
   maxPlayers: z.coerce.number().int().min(1, 'At least 1 player').max(200, 'Maximum 200 players'),
   images: z.array(z.string()).optional().default([]),
-  documents: z.array(z.string()).optional().default([]),
 });
 
 export const courtStatusSchema = z.object({
