@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 
 interface TagInputProps {
   label?: string;
@@ -10,9 +10,10 @@ interface TagInputProps {
   onChange: (tags: string[]) => void;
   error?: string;
   placeholder?: string;
+  suggestions?: string[];
 }
 
-export function TagInput({ label, value, onChange, error, placeholder }: Readonly<TagInputProps>): React.ReactElement {
+export function TagInput({ label, value, onChange, error, placeholder, suggestions }: Readonly<TagInputProps>): React.ReactElement {
   const [input, setInput] = useState('');
 
   const addTag = (tag: string): void => {
@@ -35,6 +36,8 @@ export function TagInput({ label, value, onChange, error, placeholder }: Readonl
       removeTag(value.length - 1);
     }
   };
+
+  const availableSuggestions = suggestions?.filter((s) => !value.includes(s));
 
   return (
     <div className="space-y-1">
@@ -73,6 +76,21 @@ export function TagInput({ label, value, onChange, error, placeholder }: Readonl
           className="flex-1 min-w-[120px] outline-none bg-transparent"
         />
       </div>
+      {availableSuggestions && availableSuggestions.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {availableSuggestions.map((suggestion) => (
+            <button
+              key={suggestion}
+              type="button"
+              onClick={() => addTag(suggestion)}
+              className="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-gray-50 px-2.5 py-1 text-xs text-gray-600 hover:bg-brand-50 hover:border-brand-300 hover:text-brand-700 transition-colors"
+            >
+              <Plus className="h-3 w-3" />
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
       {error && (
         <p className="text-sm text-red-600" role="alert">{error}</p>
       )}

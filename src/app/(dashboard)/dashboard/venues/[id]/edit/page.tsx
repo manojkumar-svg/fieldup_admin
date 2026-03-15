@@ -23,6 +23,18 @@ import { SPORT_TYPE_LABELS, DAY_LABELS } from '@/lib/utils';
 import { Plus, Trash2 } from 'lucide-react';
 import type { DayOfWeek, VenueWithSports } from '@/types/database';
 
+const VENUE_AMENITY_SUGGESTIONS = [
+  'Washrooms', 'Drinking Water', 'Refreshments', 'Lockers', 'Shower Areas',
+  'Parking', 'First Aid', 'Wi-Fi', 'Seating Area', 'Floodlights',
+  'CCTV', 'Cafeteria', 'Changing Rooms', 'AC', 'Pro Shop',
+];
+
+const SPORT_AMENITY_SUGGESTIONS = [
+  'Equipment Rental', 'Coaching', 'Ball Machine', 'Scoreboards',
+  'Jerseys', 'Bibs', 'Night Lights', 'Sound System', 'Umpire',
+  'Practice Nets', 'Bowling Machine', 'Goals',
+];
+
 const sportOptions = Object.entries(SPORT_TYPE_LABELS).map(([value, label]) => ({
   value,
   label,
@@ -184,6 +196,7 @@ export default function EditVenuePage(): React.ReactElement {
                   value={field.value ?? []}
                   onChange={field.onChange}
                   placeholder="e.g. Parking, Washroom, Canteen — press Enter"
+                  suggestions={VENUE_AMENITY_SUGGESTIONS}
                 />
               )}
             />
@@ -355,6 +368,7 @@ export default function EditVenuePage(): React.ReactElement {
                         value={amenField.value ?? []}
                         onChange={amenField.onChange}
                         placeholder="e.g. Equipment rental, Coaching — press Enter"
+                        suggestions={SPORT_AMENITY_SUGGESTIONS}
                       />
                     )}
                   />
