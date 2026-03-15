@@ -10,6 +10,10 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Field Up Admin',
   description: 'Admin panel for managing sports courts, academies, and trainers',
+  icons: {
+    icon: '/shortlogo.svg',
+    apple: '/shortlogo.svg',
+  },
 };
 
 export default function RootLayout({

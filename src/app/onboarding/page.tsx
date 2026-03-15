@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { TagInput } from '@/components/ui/TagInput';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { CheckboxGroup } from '@/components/ui/Checkbox';
 import {
   SPORT_TYPE_LABELS,
@@ -553,11 +554,15 @@ export default function OnboardingPage(): React.ReactElement {
                 name="idProofUrls"
                 control={control}
                 render={({ field }) => (
-                  <TagInput
-                    label="Upload ID Proof (paste URLs)"
+                  <FileUpload
+                    label="Upload ID Proof"
                     value={field.value ?? []}
                     onChange={field.onChange}
-                    placeholder="Paste file URL and press Enter"
+                    type="document"
+                    accept=".pdf,.jpg,.jpeg,.png,image/*"
+                    maxFiles={3}
+                    hint="Upload ID proof documents. Use 'Scan Document' for scanner-quality capture."
+                    enableCamera
                   />
                 )}
               />
@@ -565,11 +570,15 @@ export default function OnboardingPage(): React.ReactElement {
                 name="profilePhotoUrls"
                 control={control}
                 render={({ field }) => (
-                  <TagInput
-                    label="Venue / Profile Photos (paste URLs)"
+                  <FileUpload
+                    label="Venue / Profile Photos"
                     value={field.value ?? []}
                     onChange={field.onChange}
-                    placeholder="Paste file URL and press Enter"
+                    type="image"
+                    accept="image/*"
+                    maxFiles={5}
+                    hint="Upload photos of your venue or profile (max 5)"
+                    enableCamera
                   />
                 )}
               />

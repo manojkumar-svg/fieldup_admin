@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 import {
   LayoutDashboard,
   MapPin,
   GraduationCap,
   Users,
   LogOut,
-  Trophy,
   ClipboardList,
   Layers,
   Settings,
@@ -82,12 +82,9 @@ export default function DashboardLayout({
     <>
       {/* Logo */}
       <div className="flex h-16 items-center gap-3 border-b border-gray-100 px-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-md shadow-brand-500/20">
-          <Trophy className="h-5 w-5 text-white" />
+        <div className="h-10 overflow-hidden">
+          <Image src="/fulllogo.svg" alt="Field Up" width={140} height={40} className="object-contain h-10 w-auto" priority />
         </div>
-        <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-          Field Up
-        </span>
         {/* Close button - mobile only */}
         <button
           onClick={() => setSidebarOpen(false)}
@@ -180,8 +177,8 @@ export default function DashboardLayout({
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700">
-              <Trophy className="h-3.5 w-3.5 text-white" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg overflow-hidden">
+              <Image src="/shortlogo.svg" alt="Field Up" width={28} height={28} className="object-contain" />
             </div>
             <span className="font-semibold text-gray-900">{currentPage?.label ?? 'Dashboard'}</span>
           </div>

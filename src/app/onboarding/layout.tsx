@@ -13,11 +13,12 @@ export default function OnboardingLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-4 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-600">
-            <span className="text-white font-bold text-sm">F</span>
+        <div className="mx-auto max-w-3xl px-4 py-4 flex items-center gap-3">
+          <div className="h-9 overflow-hidden">
+            <img src="/fulllogo.svg" alt="Field Up" className="h-9 w-auto object-contain" />
           </div>
-          <span className="text-lg font-bold text-gray-900">FieldUp Partner Onboarding</span>
+          <div className="h-5 w-px bg-gray-300" />
+          <span className="text-sm font-semibold text-gray-600">Partner Onboarding</span>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">

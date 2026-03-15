@@ -13,7 +13,9 @@ export async function GET(): Promise<NextResponse> {
 
   try {
     const stats = await getDashboardStats();
-    return NextResponse.json(stats);
+    return NextResponse.json(stats, {
+      headers: { 'Cache-Control': 'private, s-maxage=60, stale-while-revalidate=120' },
+    });
   } catch (error) {
     console.error('Dashboard stats error:', error);
     return NextResponse.json(

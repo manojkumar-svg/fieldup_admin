@@ -24,7 +24,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       page: searchParams.get('page') ? Number(searchParams.get('page')) : undefined,
       limit: searchParams.get('limit') ? Number(searchParams.get('limit')) : undefined,
     });
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      headers: { 'Cache-Control': 'private, s-maxage=30, stale-while-revalidate=60' },
+    });
   } catch (error) {
     console.error('List courts error:', error);
     return NextResponse.json(

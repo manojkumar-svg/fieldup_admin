@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Trophy } from 'lucide-react';
+import Image from 'next/image';
 
 export default function LoginPage(): React.ReactElement {
   const router = useRouter();
@@ -52,8 +52,8 @@ export default function LoginPage(): React.ReactElement {
       <div className="w-full max-w-sm animate-fade-in">
         <div className="rounded-2xl bg-white/80 backdrop-blur-sm p-7 sm:p-8 shadow-xl shadow-brand-900/5 border border-white/60">
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 shadow-lg shadow-brand-500/30">
-              <Trophy className="h-7 w-7 text-white" />
+            <div className="mx-auto mb-4 overflow-hidden">
+              <Image src="/fulllogo.svg" alt="Field Up" width={180} height={52} className="object-contain mx-auto" priority />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Field Up Admin</h1>
             <p className="mt-1.5 text-sm text-gray-500">Sign in to your account</p>
