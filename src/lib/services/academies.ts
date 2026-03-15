@@ -77,6 +77,7 @@ export async function createAcademy(data: AcademyInput): Promise<Academy> {
       contactEmail: data.contactEmail || null,
       website: data.website || null,
       images: data.images ?? [],
+      documents: data.documents ?? [],
       establishedYear: data.establishedYear ?? null,
       status: 'ACTIVE' as EntityStatus,
     })
@@ -104,6 +105,7 @@ export async function updateAcademy(id: string, data: Partial<AcademyInput>): Pr
   if (data.contactEmail !== undefined) updateData.contactEmail = data.contactEmail || null;
   if (data.website !== undefined) updateData.website = data.website || null;
   if (data.images !== undefined) updateData.images = data.images;
+  if (data.documents !== undefined) updateData.documents = data.documents;
   if (data.establishedYear !== undefined) updateData.establishedYear = data.establishedYear ?? null;
 
   const { data: academy, error } = await supabase

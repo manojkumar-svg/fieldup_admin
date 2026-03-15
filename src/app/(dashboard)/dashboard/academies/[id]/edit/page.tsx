@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { useToast } from '@/components/ui/Toast';
@@ -69,6 +70,7 @@ export default function EditAcademyPage(): React.ReactElement {
           contactEmail: data.academy.contactEmail ?? '',
           website: data.academy.website ?? '',
           images: data.academy.images,
+          documents: data.academy.documents ?? [],
           establishedYear: data.academy.establishedYear,
         }
       : undefined,
@@ -173,6 +175,42 @@ export default function EditAcademyPage(): React.ReactElement {
               <Input label="Website" placeholder="https://" error={errors.website?.message} {...register('website')} />
               <Input label="Established Year" type="number" error={errors.establishedYear?.message} {...register('establishedYear')} />
             </div>
+          </div>
+        </Card>
+
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Images & Documents</h2>
+          <div className="space-y-6">
+            <Controller
+              name="images"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  label="Academy Images"
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  type="image"
+                  accept="image/*"
+                  maxFiles={10}
+                  hint="Upload photos of your academy (max 10)"
+                />
+              )}
+            />
+            <Controller
+              name="documents"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  label="Documents"
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  type="document"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  maxFiles={5}
+                  hint="Registration, licenses, or other documents (max 5)"
+                />
+              )}
+            />
           </div>
         </Card>
 

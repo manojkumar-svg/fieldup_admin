@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { TagInput } from '@/components/ui/TagInput';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { useToast } from '@/components/ui/Toast';
@@ -58,6 +59,8 @@ export default function EditTrainerPage(): React.ReactElement {
           hourlyRate: data.trainer.hourlyRate,
           bio: data.trainer.bio ?? '',
           photo: data.trainer.photo ?? '',
+          images: data.trainer.images ?? [],
+          documents: data.trainer.documents ?? [],
           city: data.trainer.city,
           state: data.trainer.state,
         }
@@ -164,6 +167,42 @@ export default function EditTrainerPage(): React.ReactElement {
               <Input label="City" error={errors.city?.message} {...register('city')} />
               <Input label="State" error={errors.state?.message} {...register('state')} />
             </div>
+          </div>
+        </Card>
+
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Images & Documents</h2>
+          <div className="space-y-6">
+            <Controller
+              name="images"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  label="Trainer Images"
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  type="image"
+                  accept="image/*"
+                  maxFiles={10}
+                  hint="Upload photos of the trainer (max 10)"
+                />
+              )}
+            />
+            <Controller
+              name="documents"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  label="Documents"
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  type="document"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  maxFiles={5}
+                  hint="Certificates, ID proofs, or other documents (max 5)"
+                />
+              )}
+            />
           </div>
         </Card>
 

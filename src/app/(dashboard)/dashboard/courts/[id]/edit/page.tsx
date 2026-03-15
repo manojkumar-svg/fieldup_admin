@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { courtSchema, type CourtInput } from '@/lib/validations/entities';
 import { Input } from '@/components/ui/Input';
@@ -12,6 +12,7 @@ import { Checkbox } from '@/components/ui/Checkbox';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { FileUpload } from '@/components/ui/FileUpload';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { CardSkeleton } from '@/components/ui/Skeleton';
 import { useToast } from '@/components/ui/Toast';
@@ -69,6 +70,7 @@ export default function EditCourtPage(): React.ReactElement {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<CourtInput>({
     resolver: zodResolver(courtSchema),
@@ -81,6 +83,8 @@ export default function EditCourtPage(): React.ReactElement {
           indoor: court.indoor,
           pricePerHour: court.pricePerHour,
           maxPlayers: court.maxPlayers,
+          images: court.images ?? [],
+          documents: court.documents ?? [],
         }
       : undefined,
   });
@@ -192,6 +196,42 @@ export default function EditCourtPage(): React.ReactElement {
                 {...register('indoor')}
               />
             </div>
+          </div>
+        </Card>
+
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Images & Documents</h2>
+          <div className="space-y-6">
+            <Controller
+              name="images"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  label="Court Images"
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  type="image"
+                  accept="image/*"
+                  maxFiles={10}
+                  hint="Upload photos of the court (max 10)"
+                />
+              )}
+            />
+            <Controller
+              name="documents"
+              control={control}
+              render={({ field }) => (
+                <FileUpload
+                  label="Documents"
+                  value={field.value ?? []}
+                  onChange={field.onChange}
+                  type="document"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                  maxFiles={5}
+                  hint="Court-related documents (max 5)"
+                />
+              )}
+            />
           </div>
         </Card>
 

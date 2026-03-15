@@ -70,6 +70,7 @@ export interface Academy {
   contactEmail: string | null;
   website: string | null;
   images: string[];
+  documents: string[];
   establishedYear: number | null;
   status: EntityStatus;
   createdAt: string;
@@ -87,6 +88,8 @@ export interface Trainer {
   hourlyRate: number;
   bio: string | null;
   photo: string | null;
+  images: string[];
+  documents: string[];
   city: string;
   state: string;
   status: EntityStatus;
@@ -103,6 +106,8 @@ export interface Court {
   indoor: boolean;
   pricePerHour: number;
   maxPlayers: number;
+  images: string[];
+  documents: string[];
   status: EntityStatus;
   createdAt: string;
   updatedAt: string;

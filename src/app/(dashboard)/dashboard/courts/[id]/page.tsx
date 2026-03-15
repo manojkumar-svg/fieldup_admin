@@ -24,6 +24,7 @@ import {
   Home,
   Layers,
   Image as ImageIcon,
+  FileText,
 } from 'lucide-react';
 import type { CourtWithVenue } from '@/types/database';
 
@@ -34,7 +35,6 @@ interface CourtDetail extends CourtWithVenue {
   state?: string;
   pincode?: string;
   amenities?: string[];
-  images?: string[];
   openTime?: string;
   closeTime?: string;
   capacity?: number;
@@ -214,6 +214,39 @@ export default function CourtDetailPage(): React.ReactElement {
                   />
                 </a>
               ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Documents */}
+        {court.documents && court.documents.length > 0 && (
+          <Card variant="bordered">
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="h-5 w-5 text-gray-700" />
+              <h2 className="text-lg font-semibold text-gray-900">Documents ({court.documents.length})</h2>
+            </div>
+            <div className="space-y-2">
+              {court.documents.map((doc, i) => {
+                const fileName = doc.split('/').pop() ?? `Document ${i + 1}`;
+                const ext = fileName.split('.').pop()?.toUpperCase() ?? 'FILE';
+                return (
+                  <a
+                    key={i}
+                    href={doc}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 transition-all group"
+                  >
+                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
+                      {ext}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-gray-900 truncate group-hover:text-brand-700">{fileName}</p>
+                      <p className="text-xs text-gray-500">Click to open</p>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </Card>
         )}

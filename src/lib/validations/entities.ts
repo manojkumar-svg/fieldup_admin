@@ -64,7 +64,8 @@ export const academySchema = z.object({
   contactPhone: z.string().min(1, 'Contact phone is required').max(20),
   contactEmail: z.string().email('Invalid email').optional().or(z.literal('')),
   website: z.string().url('Invalid URL').optional().or(z.literal('')),
-  images: z.array(z.string().url()).optional().default([]),
+  images: z.array(z.string()).optional().default([]),
+  documents: z.array(z.string()).optional().default([]),
   establishedYear: z.coerce.number().int().min(1900).max(new Date().getFullYear()).optional().nullable(),
 });
 
@@ -85,6 +86,8 @@ export const trainerSchema = z.object({
   hourlyRate: z.coerce.number().min(0, 'Rate must be non-negative'),
   bio: z.string().max(2000, 'Bio is too long').optional().or(z.literal('')),
   photo: z.string().url('Invalid URL').optional().or(z.literal('')),
+  images: z.array(z.string()).optional().default([]),
+  documents: z.array(z.string()).optional().default([]),
   city: z.string().min(1, 'City is required').max(100),
   state: z.string().min(1, 'State is required').max(100),
 });
@@ -108,6 +111,8 @@ export const courtSchema = z.object({
   indoor: z.boolean().default(false),
   pricePerHour: z.coerce.number().min(0, 'Price must be non-negative'),
   maxPlayers: z.coerce.number().int().min(1, 'At least 1 player').max(200, 'Maximum 200 players'),
+  images: z.array(z.string()).optional().default([]),
+  documents: z.array(z.string()).optional().default([]),
 });
 
 export const courtStatusSchema = z.object({

@@ -73,6 +73,8 @@ export async function createTrainer(data: TrainerInput): Promise<Trainer> {
       hourlyRate: data.hourlyRate,
       bio: data.bio || null,
       photo: data.photo || null,
+      images: data.images ?? [],
+      documents: data.documents ?? [],
       city: data.city,
       state: data.state,
       status: 'ACTIVE' as EntityStatus,
@@ -97,6 +99,8 @@ export async function updateTrainer(id: string, data: Partial<TrainerInput>): Pr
   if (data.hourlyRate !== undefined) updateData.hourlyRate = data.hourlyRate;
   if (data.bio !== undefined) updateData.bio = data.bio || null;
   if (data.photo !== undefined) updateData.photo = data.photo || null;
+  if (data.images !== undefined) updateData.images = data.images;
+  if (data.documents !== undefined) updateData.documents = data.documents;
   if (data.city !== undefined) updateData.city = data.city;
   if (data.state !== undefined) updateData.state = data.state;
 
