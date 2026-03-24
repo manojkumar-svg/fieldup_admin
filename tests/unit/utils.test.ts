@@ -23,11 +23,11 @@ describe('cn utility', () => {
 
 describe('Constants', () => {
   it('has all sport types', () => {
-    expect(Object.keys(SPORT_TYPE_LABELS)).toHaveLength(41);
-    expect(SPORT_TYPE_LABELS.CRICKET).toBe('Cricket');
+    expect(Object.keys(SPORT_TYPE_LABELS)).toHaveLength(18);
+    expect(SPORT_TYPE_LABELS.CRICKET_NET).toBe('Cricket Net');
     expect(SPORT_TYPE_LABELS.FOOTBALL).toBe('Football');
     expect(SPORT_TYPE_LABELS.TABLE_TENNIS).toBe('Table Tennis');
-    expect(SPORT_TYPE_LABELS.OTHER).toBe('Other');
+    expect(SPORT_TYPE_LABELS.SNOOKER).toBe('Snooker');
   });
 
   it('has status labels', () => {

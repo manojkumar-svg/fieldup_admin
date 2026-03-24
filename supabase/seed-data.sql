@@ -26,14 +26,14 @@ VALUES
 
 INSERT INTO "venue_sports" ("venueId", "sportType", "numberOfCourts", "pricePerHour", "openTime", "closeTime", "availableDays", "rules", "amenities")
 VALUES
-  -- Green Valley (Mumbai) — Cricket, Football
-  ('a1000000-0000-0000-0000-000000000001', 'CRICKET',    3, 1500, '06:00', '22:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'White ball only during night sessions', ARRAY['Nets', 'Bowling Machine']),
+  -- Green Valley (Mumbai) — Cricket Net, Football
+  ('a1000000-0000-0000-0000-000000000001', 'CRICKET_NET',    3, 1500, '06:00', '22:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'White ball only during night sessions', ARRAY['Nets', 'Bowling Machine']),
   ('a1000000-0000-0000-0000-000000000001', 'FOOTBALL',   2, 2000, '06:00', '22:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Studs mandatory', ARRAY['Goals', 'Bibs']),
 
-  -- Ace Racket Club (Bangalore) — Tennis, Badminton, Squash, Table Tennis
+  -- Ace Racket Club (Bangalore) — Tennis, Badminton, Snooker, Table Tennis
   ('a1000000-0000-0000-0000-000000000002', 'TENNIS',     4, 800,  '07:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Non-marking shoes required', ARRAY['Ball Machine']),
   ('a1000000-0000-0000-0000-000000000002', 'BADMINTON',  6, 600,  '06:00', '22:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', NULL, ARRAY['Shuttles Available']),
-  ('a1000000-0000-0000-0000-000000000002', 'SQUASH',     2, 700,  '07:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT}',      NULL, ARRAY[]),
+  ('a1000000-0000-0000-0000-000000000002', 'SNOOKER',    2, 700,  '07:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT}',      NULL, ARRAY[]),
   ('a1000000-0000-0000-0000-000000000002', 'TABLE_TENNIS',3, 400, '08:00', '20:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', NULL, ARRAY[]),
 
   -- Goal Zone (Noida) — Football
@@ -42,19 +42,17 @@ VALUES
   -- Splash Aqua (Chennai) — Swimming
   ('a1000000-0000-0000-0000-000000000004', 'SWIMMING',   2, 500,  '05:30', '20:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Cap and goggles mandatory', ARRAY['Kickboards', 'Pull Buoys']),
 
-  -- PowerPlay (Pune) — Cricket
-  ('a1000000-0000-0000-0000-000000000005', 'CRICKET',    5, 1200, '06:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Helmets compulsory in nets', ARRAY['Practice Nets', 'Bowling Machine', 'Video Analysis']),
+  -- PowerPlay (Pune) — Cricket Net
+  ('a1000000-0000-0000-0000-000000000005', 'CRICKET_NET',    5, 1200, '06:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Helmets compulsory in nets', ARRAY['Practice Nets', 'Bowling Machine', 'Video Analysis']),
 
   -- Slam Dunk (Hyderabad) — Basketball
   ('a1000000-0000-0000-0000-000000000006', 'BASKETBALL', 2, 1000, '06:00', '22:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Non-marking shoes only', ARRAY['Basketballs', 'Scoreboard']),
 
-  -- Volley Village (Goa) — Volleyball, Beach Volleyball
+  -- Volley Village (Goa) — Volleyball
   ('a1000000-0000-0000-0000-000000000007', 'VOLLEYBALL',      2, 800,  '07:00', '19:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', NULL, ARRAY['Volleyball', 'Net']),
-  ('a1000000-0000-0000-0000-000000000007', 'BEACH_VOLLEYBALL', 3, 600, '06:00', '18:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'Play barefoot', ARRAY['Sunscreen Available']),
 
-  -- The Boxing Ring (Kolkata) — Boxing, MMA
-  ('a1000000-0000-0000-0000-000000000008', 'BOXING',     1, 500,  '06:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT}', 'Wraps and gloves mandatory', ARRAY['Gloves', 'Wraps', 'Head Guard']),
-  ('a1000000-0000-0000-0000-000000000008', 'MMA',        1, 700,  '07:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT}', 'Mouthguard required', ARRAY['Shin Guards', 'MMA Gloves']),
+  -- The Boxing Ring (Kolkata) — Boxing
+  ('a1000000-0000-0000-0000-000000000008', 'BOXING',     2, 500,  '06:00', '21:00', '{MON,TUE,WED,THU,FRI,SAT}', 'Wraps and gloves mandatory', ARRAY['Gloves', 'Wraps', 'Head Guard']),
 
   -- Urban Kick (Bangalore) — Football
   ('a1000000-0000-0000-0000-000000000009', 'FOOTBALL',   3, 1800, '06:00', '23:00', '{MON,TUE,WED,THU,FRI,SAT,SUN}', 'No metal studs allowed', ARRAY['Bibs', 'Footballs']),
@@ -69,18 +67,18 @@ VALUES
 INSERT INTO "courts" ("id", "venueId", "name", "sportType", "surfaceType", "indoor", "pricePerHour", "maxPlayers", "status")
 VALUES
   -- Green Valley — Cricket nets & Football pitches
-  ('c1000000-0000-0000-0000-000000000001', 'a1000000-0000-0000-0000-000000000001', 'Cricket Net 1',         'CRICKET',    'TURF',      false, 1500, 6,  'ACTIVE'),
-  ('c1000000-0000-0000-0000-000000000002', 'a1000000-0000-0000-0000-000000000001', 'Cricket Net 2',         'CRICKET',    'TURF',      false, 1500, 6,  'ACTIVE'),
-  ('c1000000-0000-0000-0000-000000000003', 'a1000000-0000-0000-0000-000000000001', 'Cricket Net 3 (Indoor)','CRICKET',    'SYNTHETIC', true,  1800, 6,  'ACTIVE'),
+  ('c1000000-0000-0000-0000-000000000001', 'a1000000-0000-0000-0000-000000000001', 'Cricket Net 1',         'CRICKET_NET', 'TURF',      false, 1500, 6,  'ACTIVE'),
+  ('c1000000-0000-0000-0000-000000000002', 'a1000000-0000-0000-0000-000000000001', 'Cricket Net 2',         'CRICKET_NET', 'TURF',      false, 1500, 6,  'ACTIVE'),
+  ('c1000000-0000-0000-0000-000000000003', 'a1000000-0000-0000-0000-000000000001', 'Cricket Net 3 (Indoor)','CRICKET_NET', 'SYNTHETIC', true,  1800, 6,  'ACTIVE'),
   ('c1000000-0000-0000-0000-000000000004', 'a1000000-0000-0000-0000-000000000001', 'Football Pitch A',      'FOOTBALL',   'TURF',      false, 2000, 14, 'ACTIVE'),
   ('c1000000-0000-0000-0000-000000000005', 'a1000000-0000-0000-0000-000000000001', 'Football Pitch B',      'FOOTBALL',   'SYNTHETIC', false, 2500, 14, 'ACTIVE'),
 
-  -- Ace Racket Club — Tennis, Badminton, Squash, TT
+  -- Ace Racket Club — Tennis, Badminton, Snooker, TT
   ('c1000000-0000-0000-0000-000000000006', 'a1000000-0000-0000-0000-000000000002', 'Tennis Court 1',        'TENNIS',     'CLAY',      false, 800,  4, 'ACTIVE'),
   ('c1000000-0000-0000-0000-000000000007', 'a1000000-0000-0000-0000-000000000002', 'Tennis Court 2',        'TENNIS',     'SYNTHETIC', true,  1000, 4, 'ACTIVE'),
   ('c1000000-0000-0000-0000-000000000008', 'a1000000-0000-0000-0000-000000000002', 'Badminton Court 1',     'BADMINTON',  'WOODEN',    true,  600,  4, 'ACTIVE'),
   ('c1000000-0000-0000-0000-000000000009', 'a1000000-0000-0000-0000-000000000002', 'Badminton Court 2',     'BADMINTON',  'WOODEN',    true,  600,  4, 'ACTIVE'),
-  ('c1000000-0000-0000-0000-000000000010', 'a1000000-0000-0000-0000-000000000002', 'Squash Court 1',        'SQUASH',     'WOODEN',    true,  700,  2, 'ACTIVE'),
+  ('c1000000-0000-0000-0000-000000000010', 'a1000000-0000-0000-0000-000000000002', 'Snooker Table 1',       'SNOOKER',    'WOODEN',    true,  700,  2, 'ACTIVE'),
   ('c1000000-0000-0000-0000-000000000011', 'a1000000-0000-0000-0000-000000000002', 'Table Tennis Room',     'TABLE_TENNIS','WOODEN',   true,  400,  4, 'ACTIVE'),
 
   -- Goal Zone — Football
@@ -113,7 +111,7 @@ VALUES
   ('b1000000-0000-0000-0000-000000000003', 'Strikers Football School',       'Grassroots to elite football programme for ages 5-18',                                          '15 HSR Layout',                         'Bangalore',  'Karnataka',     '560102', 12.9116, 77.6474, '+91-9876543022', 'join@strikers.co.in',           'https://strikers.co.in',          2014, 'ACTIVE'),
   ('b1000000-0000-0000-0000-000000000004', 'ProServe Tennis School',         'Tennis coaching from beginner to tournament level',                                              '8 Race Course Road',                    'Delhi',      'Delhi',         '110003', 28.6112, 77.2134, '+91-9876543023', 'admissions@proserve.in',        'https://proserve.in',             2008, 'ACTIVE'),
   ('b1000000-0000-0000-0000-000000000005', 'SwimFast Aquatics Academy',      'Competitive swimming and water polo training centre',                                           '5 Beach Road',                          'Chennai',    'Tamil Nadu',    '600004', 13.0538, 80.2821, '+91-9876543024', 'swim@swimfast.in',              NULL,                              2018, 'ACTIVE'),
-  ('b1000000-0000-0000-0000-000000000006', 'KO Combat Academy',             'Boxing, MMA and kickboxing for fitness and competition',                                          '42 Salt Lake',                          'Kolkata',    'West Bengal',   '700091', 22.5803, 88.4155, '+91-9876543025', NULL,                            NULL,                              2019, 'ACTIVE'),
+  ('b1000000-0000-0000-0000-000000000006', 'KO Combat Academy',             'Boxing and kickboxing for fitness and competition',                                                        '42 Salt Lake',                          'Kolkata',    'West Bengal',   '700091', 22.5803, 88.4155, '+91-9876543025', NULL,                            NULL,                              2019, 'ACTIVE'),
   ('b1000000-0000-0000-0000-000000000007', 'Cricket Legends Academy',       'Producing district and state cricketers with world-class coaching',                                '33 Camp Area',                          'Pune',       'Maharashtra',   '411001', 18.5130, 73.8765, '+91-9876543026', 'info@cricketlegends.in',        'https://cricketlegends.in',       2012, 'ACTIVE'),
   ('b1000000-0000-0000-0000-000000000008', 'Hoop Dreams Basketball Club',   'Basketball training for all ages and skill levels',                                               '7 Banjara Hills Road No 3',             'Hyderabad',  'Telangana',     '500034', 17.4156, 78.4347, '+91-9876543027', 'dribble@hoopdreams.in',         NULL,                              2020, 'INACTIVE');
 
@@ -123,21 +121,21 @@ VALUES
 
 INSERT INTO "trainers" ("id", "name", "email", "phone", "sportSpecialization", "experience", "certifications", "hourlyRate", "bio", "city", "state", "status")
 VALUES
-  ('d1000000-0000-0000-0000-000000000001', 'Rahul Sharma',     'rahul.sharma@example.com',   '+91-9876543030', 'CRICKET',      12, ARRAY['BCCI Level 3', 'NCA Certified'],                    1200, 'Former Ranji Trophy player with 12 years coaching experience. Specialises in batting technique.',           'Mumbai',     'Maharashtra',  'ACTIVE'),
+  ('d1000000-0000-0000-0000-000000000001', 'Rahul Sharma',     'rahul.sharma@example.com',   '+91-9876543030', 'CRICKET_NET',  12, ARRAY['BCCI Level 3', 'NCA Certified'],                    1200, 'Former Ranji Trophy player with 12 years coaching experience. Specialises in batting technique.',           'Mumbai',     'Maharashtra',  'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000002', 'Priya Nair',       'priya.nair@example.com',     '+91-9876543031', 'TENNIS',       9,  ARRAY['ITF Level 2', 'PTR Professional'],                  1500, 'Former WTA ranked player. Focuses on competitive match preparation.',                                       'Delhi',      'Delhi',        'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000003', 'Ahmed Khan',       NULL,                          '+91-9876543032', 'FOOTBALL',     15, ARRAY['AFC B License', 'AIFF D License'],                  1000, 'Youth development specialist with 15 years in grassroots football.',                                        'Bangalore',  'Karnataka',    'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000004', 'Sneha Reddy',      'sneha.r@example.com',         '+91-9876543033', 'BADMINTON',    7,  ARRAY['BAI Certified Coach'],                               900,  'State-level player turned coach. Expert in doubles strategy.',                                             'Hyderabad',  'Telangana',    'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000005', 'Vikram Singh',     'vikram.s@example.com',        '+91-9876543034', 'BOXING',       20, ARRAY['AIBA 2-Star Coach', 'SAI Level 2'],                 800,  'Commonwealth Games bronze medallist. Training champions since 2005.',                                       'Kolkata',    'West Bengal',  'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000006', 'Meera Iyer',       'meera.i@example.com',         '+91-9876543035', 'SWIMMING',     11, ARRAY['ASCA Level 3', 'WSF Certified'],                    1100, 'Open water swimming specialist with international coaching experience.',                                    'Chennai',    'Tamil Nadu',   'ACTIVE'),
-  ('d1000000-0000-0000-0000-000000000007', 'Arjun Deshmukh',   NULL,                          '+91-9876543036', 'CRICKET',      8,  ARRAY['BCCI Level 2', 'NCA Fast Bowling'],                 1000, 'Fast bowling specialist. Coached 3 IPL net bowlers.',                                                       'Pune',       'Maharashtra',  'ACTIVE'),
+  ('d1000000-0000-0000-0000-000000000007', 'Arjun Deshmukh',   NULL,                          '+91-9876543036', 'CRICKET_NET',  8,  ARRAY['BCCI Level 2', 'NCA Fast Bowling'],                 1000, 'Fast bowling specialist. Coached 3 IPL net bowlers.',                                                       'Pune',       'Maharashtra',  'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000008', 'Fatima Shaikh',    'fatima.s@example.com',        '+91-9876543037', 'BASKETBALL',   6,  ARRAY['FIBA Level 1', 'NBA Academy Graduate'],              950,  'Former Indian Women Basketball League player.',                                                             'Hyderabad',  'Telangana',    'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000009', 'Ravi Kumar',       'ravi.k@example.com',          '+91-9876543038', 'FOOTBALL',     10, ARRAY['AFC C License'],                                     850,  'Goalkeeping coach with I-League experience.',                                                              'Noida',      'Uttar Pradesh','ACTIVE'),
   ('d1000000-0000-0000-0000-000000000010', 'Ananya Pillai',    'ananya.p@example.com',        '+91-9876543039', 'TENNIS',       5,  ARRAY['ITF Level 1'],                                      700,  'Junior tennis development coach. Specialises in kids aged 6-14.',                                          'Bangalore',  'Karnataka',    'ACTIVE'),
-  ('d1000000-0000-0000-0000-000000000011', 'Deepak Chauhan',   NULL,                          '+91-9876543040', 'MMA',          14, ARRAY['BJJ Purple Belt', 'Muay Thai Kru'],                 1300, 'Professional MMA fighter with coaching certifications in BJJ and Muay Thai.',                               'Kolkata',    'West Bengal',  'ACTIVE'),
+  ('d1000000-0000-0000-0000-000000000011', 'Deepak Chauhan',   NULL,                          '+91-9876543040', 'BOXING',       14, ARRAY['BJJ Purple Belt', 'Muay Thai Kru'],                 1300, 'Professional boxing and combat sports coach.',                                                             'Kolkata',    'West Bengal',  'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000012', 'Kavitha Sundaram',  'kavitha.s@example.com',      '+91-9876543041', 'VOLLEYBALL',   9,  ARRAY['FIVB Level 2'],                                      750,  'Former Indian volleyball team member. Beach volleyball specialist.',                                       'Goa',        'Goa',          'ACTIVE'),
-  ('d1000000-0000-0000-0000-000000000013', 'Suresh Menon',     'suresh.m@example.com',        '+91-9876543042', 'SQUASH',       11, ARRAY['WSF Level 2', 'SRFI Certified'],                     950,  'National squash champion 2015. Coaching competitive players.',                                             'Mumbai',     'Maharashtra',  'ACTIVE'),
+  ('d1000000-0000-0000-0000-000000000013', 'Suresh Menon',     'suresh.m@example.com',        '+91-9876543042', 'SNOOKER',      11, ARRAY['WSF Level 2', 'SRFI Certified'],                     950,  'National snooker champion 2015. Coaching competitive players.',                                             'Mumbai',     'Maharashtra',  'ACTIVE'),
   ('d1000000-0000-0000-0000-000000000014', 'Pooja Verma',      NULL,                          '+91-9876543043', 'BADMINTON',    4,  ARRAY['BAI Level 1'],                                       600,  'Former university badminton captain. Great with beginners.',                                                'Delhi',      'Delhi',        'INACTIVE'),
-  ('d1000000-0000-0000-0000-000000000015', 'Rajesh Tiwari',    'rajesh.t@example.com',        '+91-9876543044', 'CRICKET',      18, ARRAY['BCCI Level 3', 'ECB Level 3', 'NCA Spin Bowling'],  2000, 'Spin bowling guru. Coached IPL franchise academies. 18 years international experience.',                    'Mumbai',     'Maharashtra',  'ACTIVE');
+  ('d1000000-0000-0000-0000-000000000015', 'Rajesh Tiwari',    'rajesh.t@example.com',        '+91-9876543044', 'CRICKET_NET',  18, ARRAY['BCCI Level 3', 'ECB Level 3', 'NCA Spin Bowling'],  2000, 'Spin bowling guru. Coached IPL franchise academies. 18 years international experience.',                    'Mumbai',     'Maharashtra',  'ACTIVE');
 
 -- ============================================================
 -- 6. ACADEMY ↔ TRAINER LINKS
@@ -164,7 +162,7 @@ VALUES
   -- SwimFast ← Swimming
   ('b1000000-0000-0000-0000-000000000005', 'd1000000-0000-0000-0000-000000000006'),
 
-  -- KO Combat ← Boxing + MMA
+  -- KO Combat ← Boxing
   ('b1000000-0000-0000-0000-000000000006', 'd1000000-0000-0000-0000-000000000005'),
   ('b1000000-0000-0000-0000-000000000006', 'd1000000-0000-0000-0000-000000000011'),
 
@@ -182,12 +180,12 @@ VALUES
 INSERT INTO "onboarding_applications" ("id", "status", "partnerType", "businessName", "contactPerson", "phone", "email", "city", "fullAddress", "googleMapsLink", "sportsOffered", "experienceYears", "shortBio", "numberOfCourts", "surfaceType", "facilities", "sessionTypes", "maxStudents", "availableDays", "operatingHours", "slotDuration", "pricePerSlot", "weekendPricingDiff", "cancellationAllowed", "acceptsCash", "bankAccountName", "termsAccepted")
 VALUES
   -- PENDING applications
-  ('e1000000-0000-0000-0000-000000000001', 'PENDING',      'VENUE',   'Sunrise Sports Hub',        'Manish Goel',     '+91-9876543050', 'manish@sunrise.com',    'Jaipur',     '45 MI Road, Jaipur', NULL, '{CRICKET,FOOTBALL}',   NULL, NULL, 4, 'SYNTHETIC',  '{Parking,Floodlights,Washrooms}', '{}', NULL, '{MON,TUE,WED,THU,FRI,SAT,SUN}', '6 AM - 10 PM', 'SIXTY_MINS',  1500, true,  true,  true,  'Manish Goel', true),
-  ('e1000000-0000-0000-0000-000000000002', 'PENDING',      'COACH',   'Coach Arjun Fitness',       'Arjun Malhotra',  '+91-9876543051', 'arjun@fitness.com',     'Chandigarh', '12 Sector 17, Chandigarh', NULL, '{BOXING,MMA}', 8, 'Professional boxer turned fitness coach with 8 years experience', NULL, NULL, '{}', '{Personal,Group,Online}', 15, '{MON,TUE,WED,THU,FRI,SAT}', '7 AM - 9 PM', 'SIXTY_MINS', 800, false, true, false, 'Arjun Malhotra', true),
+  ('e1000000-0000-0000-0000-000000000001', 'PENDING',      'VENUE',   'Sunrise Sports Hub',        'Manish Goel',     '+91-9876543050', 'manish@sunrise.com',    'Jaipur',     '45 MI Road, Jaipur', NULL, '{CRICKET_NET,FOOTBALL}',   NULL, NULL, 4, 'SYNTHETIC',  '{Parking,Floodlights,Washrooms}', '{}', NULL, '{MON,TUE,WED,THU,FRI,SAT,SUN}', '6 AM - 10 PM', 'SIXTY_MINS',  1500, true,  true,  true,  'Manish Goel', true),
+  ('e1000000-0000-0000-0000-000000000002', 'PENDING',      'COACH',   'Coach Arjun Fitness',       'Arjun Malhotra',  '+91-9876543051', 'arjun@fitness.com',     'Chandigarh', '12 Sector 17, Chandigarh', NULL, '{BOXING}', 8, 'Professional boxer turned fitness coach with 8 years experience', NULL, NULL, '{}', '{Personal,Group,Online}', 15, '{MON,TUE,WED,THU,FRI,SAT}', '7 AM - 9 PM', 'SIXTY_MINS', 800, false, true, false, 'Arjun Malhotra', true),
 
   -- UNDER_REVIEW
   ('e1000000-0000-0000-0000-000000000003', 'UNDER_REVIEW', 'VENUE',   'Peak Performance Arena',    'Sanjay Kapoor',   '+91-9876543052', 'sanjay@peak.com',       'Ahmedabad',  '88 SG Highway, Ahmedabad', 'https://maps.google.com/?q=peak+arena', '{BASKETBALL,VOLLEYBALL}', NULL, NULL, 3, 'WOODEN', '{Indoor,AC,Scoreboard}', '{}', NULL, '{MON,TUE,WED,THU,FRI,SAT,SUN}', '8 AM - 10 PM', 'SIXTY_MINS', 1200, true, false, true, 'Peak Performance LLP', true),
-  ('e1000000-0000-0000-0000-000000000004', 'UNDER_REVIEW', 'ACADEMY', 'NextGen Cricket Academy',   'Ramesh Patil',    '+91-9876543053', 'ramesh@nextgen.com',    'Nagpur',     '5 Civil Lines, Nagpur', NULL, '{CRICKET}', 15, 'Running cricket academy for 15 years with 200+ students', 6, 'TURF', '{Nets,Bowling Machine,Match Ground}', '{Group,Personal,Camp}', 50, '{MON,TUE,WED,THU,FRI,SAT,SUN}', '6 AM - 8 PM', 'NINETY_MINS', 500, false, true, true, 'NextGen Cricket Academy', true),
+  ('e1000000-0000-0000-0000-000000000004', 'UNDER_REVIEW', 'ACADEMY', 'NextGen Cricket Academy',   'Ramesh Patil',    '+91-9876543053', 'ramesh@nextgen.com',    'Nagpur',     '5 Civil Lines, Nagpur', NULL, '{CRICKET_NET}', 15, 'Running cricket academy for 15 years with 200+ students', 6, 'TURF', '{Nets,Bowling Machine,Match Ground}', '{Group,Personal,Camp}', 50, '{MON,TUE,WED,THU,FRI,SAT,SUN}', '6 AM - 8 PM', 'NINETY_MINS', 500, false, true, true, 'NextGen Cricket Academy', true),
 
   -- APPROVED
   ('e1000000-0000-0000-0000-000000000005', 'APPROVED',     'VENUE',   'Metro Sports Complex',      'Anita Desai',     '+91-9876543054', 'anita@metrosports.com', 'Lucknow',    '100 Gomti Nagar, Lucknow', NULL, '{TENNIS,BADMINTON,TABLE_TENNIS}', NULL, NULL, 8, 'SYNTHETIC', '{Indoor,AC,Pro Shop,Cafeteria}', '{}', NULL, '{MON,TUE,WED,THU,FRI,SAT,SUN}', '7 AM - 10 PM', 'SIXTY_MINS', 700, true, true, true, 'Metro Sports Pvt Ltd', true),

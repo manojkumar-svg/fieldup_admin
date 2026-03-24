@@ -81,6 +81,7 @@ export async function createCourt(input: CourtInput): Promise<Court> {
       pricePerHour: input.pricePerHour,
       maxPlayers: input.maxPlayers,
       images: input.images ?? [],
+      cancellationAvailable: input.cancellationAvailable ?? false,
       status: 'ACTIVE' as EntityStatus,
     })
     .select()
@@ -103,6 +104,7 @@ export async function updateCourt(id: string, input: CourtInput): Promise<Court>
       pricePerHour: input.pricePerHour,
       maxPlayers: input.maxPlayers,
       images: input.images ?? [],
+      cancellationAvailable: input.cancellationAvailable ?? false,
     })
     .eq('id', id)
     .select()

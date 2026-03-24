@@ -72,11 +72,22 @@ export async function createTrainer(data: TrainerInput): Promise<Trainer> {
       certifications: data.certifications ?? [],
       hourlyRate: data.hourlyRate,
       bio: data.bio || null,
-      photo: data.photo || null,
+      photo: data.photo || (data.images && data.images.length > 0 ? data.images[0] : null),
       images: data.images ?? [],
       documents: data.documents ?? [],
+      imageTitles: data.imageTitles ?? [],
+      documentTitles: data.documentTitles ?? [],
       city: data.city,
       state: data.state,
+      address: data.address || '',
+      pincode: data.pincode || '',
+      latitude: data.latitude ?? null,
+      longitude: data.longitude ?? null,
+      cancellationAvailable: data.cancellationAvailable ?? false,
+      kidsTraining: data.kidsTraining ?? false,
+      groupSessions: data.groupSessions ?? false,
+      oneOnOneCoaching: data.oneOnOneCoaching ?? false,
+      sessionConfig: data.sessionConfig ?? {},
       status: 'ACTIVE' as EntityStatus,
     })
     .select()
@@ -98,11 +109,26 @@ export async function updateTrainer(id: string, data: Partial<TrainerInput>): Pr
   if (data.certifications !== undefined) updateData.certifications = data.certifications;
   if (data.hourlyRate !== undefined) updateData.hourlyRate = data.hourlyRate;
   if (data.bio !== undefined) updateData.bio = data.bio || null;
-  if (data.photo !== undefined) updateData.photo = data.photo || null;
   if (data.images !== undefined) updateData.images = data.images;
+  if (data.photo !== undefined) {
+    updateData.photo = data.photo || (data.images && data.images.length > 0 ? data.images[0] : null);
+  } else if (data.images !== undefined && data.images.length > 0) {
+    updateData.photo = data.images[0];
+  }
   if (data.documents !== undefined) updateData.documents = data.documents;
+  if (data.imageTitles !== undefined) updateData.imageTitles = data.imageTitles;
+  if (data.documentTitles !== undefined) updateData.documentTitles = data.documentTitles;
   if (data.city !== undefined) updateData.city = data.city;
   if (data.state !== undefined) updateData.state = data.state;
+  if (data.address !== undefined) updateData.address = data.address || '';
+  if (data.pincode !== undefined) updateData.pincode = data.pincode || '';
+  if (data.latitude !== undefined) updateData.latitude = data.latitude ?? null;
+  if (data.longitude !== undefined) updateData.longitude = data.longitude ?? null;
+  if (data.cancellationAvailable !== undefined) updateData.cancellationAvailable = data.cancellationAvailable;
+  if (data.kidsTraining !== undefined) updateData.kidsTraining = data.kidsTraining;
+  if (data.groupSessions !== undefined) updateData.groupSessions = data.groupSessions;
+  if (data.oneOnOneCoaching !== undefined) updateData.oneOnOneCoaching = data.oneOnOneCoaching;
+  if (data.sessionConfig !== undefined) updateData.sessionConfig = data.sessionConfig;
 
   const { data: trainer, error } = await supabase
     .from('trainers')

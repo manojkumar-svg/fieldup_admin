@@ -18,47 +18,24 @@ enum EntityStatus {
 }
 
 enum SportType {
-  CRICKET
+  CRICKET_NET
+  BOX_CRICKET
   FOOTBALL
   BASKETBALL
+  PICKLEBALL
   TENNIS
   BADMINTON
   SWIMMING
   HOCKEY
   VOLLEYBALL
   TABLE_TENNIS
-  SQUASH
-  AQUATICS
+  SNOOKER
   ARCHERY
-  ATHLETICS
-  BEACH_VOLLEYBALL
   BOXING
-  BREAKING
-  CANOEING
-  CYCLING
-  EQUESTRIAN
-  FENCING
   GOLF
-  GYMNASTICS
-  HANDBALL
-  JUDO
-  KARATE
-  MMA
-  MODERN_PENTATHLON
-  PICKLEBALL
-  ROWING
-  RUGBY_SEVENS
-  SAILING
   SHOOTING
   SKATEBOARDING
-  SPORT_CLIMBING
-  SURFING
   TAEKWONDO
-  TRIATHLON
-  UFC
-  WEIGHTLIFTING
-  WRESTLING
-  OTHER
 }
 
 enum PartnerType {
@@ -184,6 +161,7 @@ model Trainer {
   updatedAt           DateTime     @updatedAt
 
   academies AcademyTrainer[]
+  gyms      GymTrainer[]
 
   @@index([sportSpecialization])
   @@index([status])
@@ -202,6 +180,105 @@ model AcademyTrainer {
 
   @@unique([academyId, trainerId])
   @@map("academy_trainers")
+}
+
+model Gym {
+  id           String       @id @default(cuid())
+  name         String
+  description  String?
+  address      String
+  city         String
+  state        String
+  pincode      String
+  latitude     Float?
+  longitude    Float?
+  contactPhone String
+  contactEmail String?
+  website      String?
+  amenities    String[]
+  images       String[]
+  documents    String[]
+  openTime     String?
+  closeTime    String?
+  monthlyFee   Float?
+  status       EntityStatus @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  trainers GymTrainer[]
+
+  @@index([status])
+  @@index([city])
+  @@map("gyms")
+}
+
+model GymTrainer {
+  id        String   @id @default(cuid())
+  gymId     String
+  trainerId String
+  joinedAt  DateTime @default(now())
+
+  gym     Gym     @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  trainer Trainer @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+
+  @@unique([gymId, trainerId])
+  @@map("gym_trainers")
+}
+
+model YogaStudio {
+  id           String       @id @default(cuid())
+  name         String
+  description  String?
+  address      String
+  city         String
+  state        String
+  pincode      String
+  latitude     Float?
+  longitude    Float?
+  contactPhone String
+  contactEmail String?
+  website      String?
+  amenities    String[]
+  images       String[]
+  documents    String[]
+  openTime     String?
+  closeTime    String?
+  monthlyFee   Float?
+  status       EntityStatus @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([status])
+  @@index([city])
+  @@map("yoga_studios")
+}
+
+model ZumbaStudio {
+  id           String       @id @default(cuid())
+  name         String
+  description  String?
+  address      String
+  city         String
+  state        String
+  pincode      String
+  latitude     Float?
+  longitude    Float?
+  contactPhone String
+  contactEmail String?
+  website      String?
+  amenities    String[]
+  images       String[]
+  documents    String[]
+  openTime     String?
+  closeTime    String?
+  monthlyFee   Float?
+  status       EntityStatus @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([status])
+  @@index([city])
+  @@map("zumba_studios")
 }
 
 model OnboardingApplication {

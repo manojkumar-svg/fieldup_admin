@@ -13,20 +13,24 @@ import {
   Users,
   LogOut,
   ClipboardList,
-  Layers,
   Settings,
   Menu,
   X,
   ChevronRight,
+  Dumbbell,
+  Flower2,
+  Music,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'text-blue-500' },
   { href: '/dashboard/onboarding', label: 'Onboarding', icon: ClipboardList, color: 'text-amber-500' },
   { href: '/dashboard/venues', label: 'Venues', icon: MapPin, color: 'text-emerald-500' },
-  { href: '/dashboard/courts', label: 'Courts', icon: Layers, color: 'text-violet-500' },
   { href: '/dashboard/academies', label: 'Academies', icon: GraduationCap, color: 'text-cyan-500' },
   { href: '/dashboard/trainers', label: 'Trainers', icon: Users, color: 'text-rose-500' },
+  { href: '/dashboard/gyms', label: 'Gyms', icon: Dumbbell, color: 'text-orange-500' },
+  { href: '/dashboard/yoga-studios', label: 'Yoga Studios', icon: Flower2, color: 'text-purple-500' },
+  { href: '/dashboard/zumba-studios', label: 'Zumba Studios', icon: Music, color: 'text-pink-500' },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings, color: 'text-gray-500' },
 ];
 

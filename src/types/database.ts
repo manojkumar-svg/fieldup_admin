@@ -1,12 +1,8 @@
 export type SportType =
-  | 'CRICKET' | 'FOOTBALL' | 'BASKETBALL' | 'TENNIS' | 'BADMINTON'
-  | 'SWIMMING' | 'HOCKEY' | 'VOLLEYBALL' | 'TABLE_TENNIS' | 'SQUASH'
-  | 'AQUATICS' | 'ARCHERY' | 'ATHLETICS' | 'BEACH_VOLLEYBALL' | 'BOXING'
-  | 'BREAKING' | 'CANOEING' | 'CYCLING' | 'EQUESTRIAN' | 'FENCING'
-  | 'GOLF' | 'GYMNASTICS' | 'HANDBALL' | 'JUDO' | 'KARATE' | 'MMA'
-  | 'MODERN_PENTATHLON' | 'PICKLEBALL' | 'ROWING' | 'RUGBY_SEVENS'
-  | 'SAILING' | 'SHOOTING' | 'SKATEBOARDING' | 'SPORT_CLIMBING' | 'SURFING'
-  | 'TAEKWONDO' | 'TRIATHLON' | 'UFC' | 'WEIGHTLIFTING' | 'WRESTLING' | 'OTHER';
+  | 'CRICKET_NET' | 'BOX_CRICKET' | 'FOOTBALL' | 'BASKETBALL' | 'PICKLEBALL'
+  | 'TENNIS' | 'BADMINTON' | 'SWIMMING' | 'HOCKEY' | 'VOLLEYBALL'
+  | 'TABLE_TENNIS' | 'SNOOKER' | 'ARCHERY' | 'BOXING' | 'GOLF'
+  | 'SHOOTING' | 'SKATEBOARDING' | 'TAEKWONDO';
 
 export type EntityStatus = 'ACTIVE' | 'INACTIVE';
 export type UserRole = 'SUPER_ADMIN' | 'OPERATIONS_MANAGER';
@@ -29,6 +25,8 @@ export interface Venue {
   amenities: string[];
   images: string[];
   documents: string[];
+  imageTitles: string[];
+  documentTitles: string[];
   contactPhone: string | null;
   contactEmail: string | null;
   status: EntityStatus;
@@ -71,10 +69,26 @@ export interface Academy {
   website: string | null;
   images: string[];
   documents: string[];
+  imageTitles: string[];
+  documentTitles: string[];
   establishedYear: number | null;
   status: EntityStatus;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface SessionDetail {
+  timings: string;
+  fee: number;
+  maxCapacity: number;
+  ageMin?: number;
+  ageMax?: number;
+}
+
+export interface SessionConfig {
+  kids?: SessionDetail;
+  group?: SessionDetail;
+  oneOnOne?: SessionDetail;
 }
 
 export interface Trainer {
@@ -90,8 +104,19 @@ export interface Trainer {
   photo: string | null;
   images: string[];
   documents: string[];
+  imageTitles: string[];
+  documentTitles: string[];
+  address: string;
   city: string;
   state: string;
+  pincode: string;
+  latitude: number | null;
+  longitude: number | null;
+  cancellationAvailable: boolean;
+  kidsTraining: boolean;
+  groupSessions: boolean;
+  oneOnOneCoaching: boolean;
+  sessionConfig: SessionConfig;
   status: EntityStatus;
   createdAt: string;
   updatedAt: string;
@@ -107,6 +132,7 @@ export interface Court {
   pricePerHour: number;
   maxPlayers: number;
   images: string[];
+  cancellationAvailable: boolean;
   status: EntityStatus;
   createdAt: string;
   updatedAt: string;
@@ -114,6 +140,84 @@ export interface Court {
 
 export interface CourtWithVenue extends Court {
   venues: { id: string; name: string; city: string } | null;
+}
+
+export interface Gym {
+  id: string;
+  name: string;
+  description: string | null;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  latitude: number | null;
+  longitude: number | null;
+  contactPhone: string;
+  contactEmail: string | null;
+  website: string | null;
+  amenities: string[];
+  images: string[];
+  documents: string[];
+  imageTitles: string[];
+  documentTitles: string[];
+  openTime: string | null;
+  closeTime: string | null;
+  monthlyFee: number | null;
+  status: EntityStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface YogaStudio {
+  id: string;
+  name: string;
+  description: string | null;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  latitude: number | null;
+  longitude: number | null;
+  contactPhone: string;
+  contactEmail: string | null;
+  website: string | null;
+  amenities: string[];
+  images: string[];
+  documents: string[];
+  imageTitles: string[];
+  documentTitles: string[];
+  openTime: string | null;
+  closeTime: string | null;
+  monthlyFee: number | null;
+  status: EntityStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ZumbaStudio {
+  id: string;
+  name: string;
+  description: string | null;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  latitude: number | null;
+  longitude: number | null;
+  contactPhone: string;
+  contactEmail: string | null;
+  website: string | null;
+  amenities: string[];
+  images: string[];
+  documents: string[];
+  imageTitles: string[];
+  documentTitles: string[];
+  openTime: string | null;
+  closeTime: string | null;
+  monthlyFee: number | null;
+  status: EntityStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface VenueImage {

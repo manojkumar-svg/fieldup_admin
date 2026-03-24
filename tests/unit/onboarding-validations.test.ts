@@ -19,7 +19,7 @@ const validBasicDetails = {
 
 const validFullApplication = {
   ...validBasicDetails,
-  sportsOffered: ['CRICKET' as const, 'BADMINTON' as const],
+  sportsOffered: ['CRICKET_NET' as const, 'BADMINTON' as const],
   experienceYears: 5,
   certifications: [],
   shortBio: 'A great venue',
@@ -137,16 +137,12 @@ describe('Onboarding Validations', () => {
       expect(result.success).toBe(false);
     });
 
-    it('validates all sport types from the expanded list', () => {
+    it('validates all sport types from the list', () => {
       const allSports = [
-        'CRICKET', 'FOOTBALL', 'BASKETBALL', 'TENNIS', 'BADMINTON',
-        'SWIMMING', 'HOCKEY', 'VOLLEYBALL', 'TABLE_TENNIS', 'SQUASH',
-        'AQUATICS', 'ARCHERY', 'ATHLETICS', 'BEACH_VOLLEYBALL', 'BOXING',
-        'BREAKING', 'CANOEING', 'CYCLING', 'EQUESTRIAN', 'FENCING',
-        'GOLF', 'GYMNASTICS', 'HANDBALL', 'JUDO', 'KARATE', 'MMA',
-        'MODERN_PENTATHLON', 'PICKLEBALL', 'ROWING', 'RUGBY_SEVENS',
-        'SAILING', 'SHOOTING', 'SKATEBOARDING', 'SPORT_CLIMBING', 'SURFING',
-        'TAEKWONDO', 'TRIATHLON', 'UFC', 'WEIGHTLIFTING', 'WRESTLING', 'OTHER',
+        'CRICKET_NET', 'BOX_CRICKET', 'FOOTBALL', 'BASKETBALL', 'PICKLEBALL',
+        'TENNIS', 'BADMINTON', 'SWIMMING', 'HOCKEY', 'VOLLEYBALL',
+        'TABLE_TENNIS', 'SNOOKER', 'ARCHERY', 'BOXING', 'GOLF',
+        'SHOOTING', 'SKATEBOARDING', 'TAEKWONDO',
       ];
       const result = onboardingSchema.safeParse({
         ...validFullApplication,

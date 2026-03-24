@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { trainerSchema, trainerStatusSchema } from '@/lib/validations/entities';
 import { getTrainerById, updateTrainer, updateTrainerStatus, deleteTrainer } from '@/lib/services/trainers';
+import { createAuditLog } from '@/lib/services/audit';
 
 
 interface RouteParams {
@@ -73,6 +74,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
     }
 
     const trainer = await updateTrainer(params.id, parsed.data);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'TRAINER', entityId: params.id, action: 'UPDATE', changes: parsed.data });
     return NextResponse.json({ trainer });
   } catch (error) {
     console.error('Update trainer error:', error);
@@ -121,6 +123,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams): Prom
     }
 
     const trainer = await updateTrainerStatus(params.id, parsed.data.status);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'TRAINER', entityId: params.id, action: 'STATUS_CHANGE', changes: { status: parsed.data.status } });
     return NextResponse.json({ trainer });
   } catch (error) {
     console.error('Update trainer status error:', error);
@@ -150,6 +153,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams): Pr
     }
 
     await deleteTrainer(params.id);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'TRAINER', entityId: params.id, action: 'DELETE' });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete trainer error:', error);

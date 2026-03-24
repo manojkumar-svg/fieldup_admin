@@ -176,6 +176,10 @@ export default function OnboardingPage(): React.ReactElement {
                 <Input
                   label="Phone Number"
                   type="tel"
+                  inputMode="numeric"
+                  placeholder="9876543210"
+                  maxLength={15}
+                  hint="10 digits starting with 6-9 (e.g. 9876543210)"
                   error={errors.phone?.message}
                   {...register('phone')}
                 />

@@ -13,7 +13,7 @@ describe('Badge Component', () => {
   it('applies variant classes', () => {
     render(<Badge variant="success">Success</Badge>);
     const badge = screen.getByText('Success');
-    expect(badge.className).toContain('green');
+    expect(badge.className).toContain('emerald');
   });
 
   it('applies error variant', () => {

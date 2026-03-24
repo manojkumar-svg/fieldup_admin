@@ -79,11 +79,12 @@ export default function TrainerDetailPage(): React.ReactElement {
     );
   }
 
+  const profilePhoto = trainer.photo || (trainer.images && trainer.images.length > 0 ? trainer.images[0] : null);
+
   return (
     <div>
       <PageHeader
         title={trainer.name}
-        subtitle={SPORT_TYPE_LABELS[trainer.sportSpecialization] ?? trainer.sportSpecialization}
         backHref="/dashboard/trainers"
         action={
           <Button onClick={() => router.push(`/dashboard/trainers/${id}/edit`)}>
@@ -93,30 +94,21 @@ export default function TrainerDetailPage(): React.ReactElement {
         }
       />
 
-      <div className="flex items-center gap-3 mb-6">
-        <Badge variant={trainer.status === 'ACTIVE' ? 'success' : 'error'} size="md">
-          {trainer.status}
-        </Badge>
-        <span className="text-sm text-gray-500">
-          Created {new Date(trainer.createdAt).toLocaleDateString()}
-        </span>
-      </div>
-
       <div className="space-y-6 max-w-4xl">
         {/* Photo & Profile */}
         <Card variant="bordered">
           <div className="flex items-start gap-6">
             {/* Photo */}
             <div className="shrink-0">
-              {trainer.photo ? (
+              {profilePhoto ? (
                 <a
-                  href={trainer.photo}
+                  href={profilePhoto}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block h-28 w-28 rounded-2xl overflow-hidden border-2 border-gray-200 hover:border-brand-400 transition-colors"
                 >
                   <img
-                    src={trainer.photo}
+                    src={profilePhoto}
                     alt={trainer.name}
                     className="h-full w-full object-cover"
                   />
@@ -133,14 +125,20 @@ export default function TrainerDetailPage(): React.ReactElement {
               <p className="text-sm text-gray-600 mt-1">
                 {SPORT_TYPE_LABELS[trainer.sportSpecialization] ?? trainer.sportSpecialization} Specialist
               </p>
-              <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
-                <span className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-3 mt-3">
+                <Badge variant={trainer.status === 'ACTIVE' ? 'success' : 'error'} size="md">
+                  {trainer.status}
+                </Badge>
+                <span className="flex items-center gap-1 text-sm text-gray-500">
                   <Clock className="h-4 w-4" />
                   {trainer.experience} {trainer.experience === 1 ? 'year' : 'years'} experience
                 </span>
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 text-sm text-gray-500">
                   <IndianRupee className="h-4 w-4" />
                   {formatCurrency(trainer.hourlyRate)}/hr
+                </span>
+                <span className="text-sm text-gray-500">
+                  Created {new Date(trainer.createdAt).toLocaleDateString()}
                 </span>
               </div>
             </div>

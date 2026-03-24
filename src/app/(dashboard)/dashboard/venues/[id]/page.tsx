@@ -128,7 +128,7 @@ export default function VenueDetailPage(): React.ReactElement {
   const router = useRouter();
   const id = params.id as string;
 
-  const { data: venue, isLoading, error, refetch } = useQuery<VenueWithSports>({
+  const { data, isLoading, error, refetch } = useQuery<{ venue: VenueWithSports }>({
     queryKey: ['venue', id],
     queryFn: async () => {
       const res = await fetch(`/api/venues/${id}`);
@@ -136,6 +136,8 @@ export default function VenueDetailPage(): React.ReactElement {
       return res.json();
     },
   });
+
+  const venue = data?.venue;
 
   if (isLoading) {
     return (
@@ -163,7 +165,6 @@ export default function VenueDetailPage(): React.ReactElement {
     <div>
       <PageHeader
         title={venue.name}
-        subtitle={`${venue.city}, ${venue.state}`}
         backHref="/dashboard/venues"
         action={
           <Button onClick={() => router.push(`/dashboard/venues/${id}/edit`)}>
@@ -173,22 +174,60 @@ export default function VenueDetailPage(): React.ReactElement {
         }
       />
 
-      <div className="flex items-center gap-3 mb-6">
-        <Badge variant={venue.status === 'ACTIVE' ? 'success' : 'error'} size="md">
-          {venue.status}
-        </Badge>
-        <span className="text-sm text-gray-500">
-          Created {new Date(venue.createdAt).toLocaleDateString()}
-        </span>
-      </div>
-
       <div className="space-y-6 max-w-4xl">
-        {/* General Info */}
+        {/* Profile Hero */}
         <Card variant="bordered">
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">General Information</h2>
-          {venue.description && (
-            <p className="text-sm text-gray-600 mb-4">{venue.description}</p>
-          )}
+          <div className="flex items-start gap-6">
+            {/* Thumbnail */}
+            <div className="shrink-0">
+              {venue.images && venue.images.length > 0 ? (
+                <a
+                  href={venue.images[0]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-28 w-28 rounded-2xl overflow-hidden border-2 border-gray-200 hover:border-brand-400 transition-colors"
+                >
+                  <img
+                    src={venue.images[0]}
+                    alt={venue.name}
+                    className="h-full w-full object-cover"
+                  />
+                </a>
+              ) : (
+                <div className="flex items-center justify-center h-28 w-28 rounded-2xl bg-gray-100 border-2 border-gray-200">
+                  <MapPin className="h-10 w-10 text-gray-400" />
+                </div>
+              )}
+            </div>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-xl font-bold text-gray-900">{venue.name}</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {venue.address}, {venue.city}, {venue.state} - {venue.pincode}
+              </p>
+              <div className="flex flex-wrap items-center gap-3 mt-3">
+                <Badge variant={venue.status === 'ACTIVE' ? 'success' : 'error'} size="md">
+                  {venue.status}
+                </Badge>
+                {venue.venue_sports && venue.venue_sports.length > 0 && (
+                  <span className="text-sm text-gray-500">
+                    {venue.venue_sports.length} sport{venue.venue_sports.length !== 1 ? 's' : ''}
+                  </span>
+                )}
+                <span className="text-sm text-gray-500">
+                  Created {new Date(venue.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              {venue.description && (
+                <p className="text-sm text-gray-600 mt-3 line-clamp-2">{venue.description}</p>
+              )}
+            </div>
+          </div>
+        </Card>
+
+        {/* Contact Details */}
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">Contact & Location</h2>
           <InfoRow icon={MapPin} label="Address" value={`${venue.address}, ${venue.city}, ${venue.state} - ${venue.pincode}`} />
           {venue.latitude && venue.longitude && (
             <InfoRow icon={MapPin} label="Coordinates" value={`${venue.latitude}, ${venue.longitude}`} />

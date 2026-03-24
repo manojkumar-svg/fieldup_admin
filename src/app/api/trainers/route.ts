@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { trainerSchema } from '@/lib/validations/entities';
 import { listTrainers, createTrainer } from '@/lib/services/trainers';
+import { createAuditLog } from '@/lib/services/audit';
 import type { SportType, EntityStatus } from '@/types/database';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -65,6 +66,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const trainer = await createTrainer(parsed.data);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'TRAINER', entityId: trainer.id, action: 'CREATE', changes: parsed.data });
     return NextResponse.json({ trainer }, { status: 201 });
   } catch (error) {
     console.error('Create trainer error:', error);

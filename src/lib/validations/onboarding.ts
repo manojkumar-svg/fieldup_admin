@@ -2,15 +2,14 @@ import { z } from 'zod';
 
 const partnerTypeEnum = z.enum(['VENUE', 'COACH', 'ACADEMY']);
 
+// Indian phone: 10 digits starting with 6-9, optionally prefixed with +91 or 0, allows spaces/dashes
+const phoneRegex = /^(?:(?:\+91|0)[\s-]?)?[6-9]\d{2}[\s-]?\d{3}[\s-]?\d{4}$/;
+
 const sportTypeEnum = z.enum([
-  'CRICKET', 'FOOTBALL', 'BASKETBALL', 'TENNIS', 'BADMINTON',
-  'SWIMMING', 'HOCKEY', 'VOLLEYBALL', 'TABLE_TENNIS', 'SQUASH',
-  'AQUATICS', 'ARCHERY', 'ATHLETICS', 'BEACH_VOLLEYBALL', 'BOXING',
-  'BREAKING', 'CANOEING', 'CYCLING', 'EQUESTRIAN', 'FENCING',
-  'GOLF', 'GYMNASTICS', 'HANDBALL', 'JUDO', 'KARATE', 'MMA',
-  'MODERN_PENTATHLON', 'PICKLEBALL', 'ROWING', 'RUGBY_SEVENS',
-  'SAILING', 'SHOOTING', 'SKATEBOARDING', 'SPORT_CLIMBING', 'SURFING',
-  'TAEKWONDO', 'TRIATHLON', 'UFC', 'WEIGHTLIFTING', 'WRESTLING', 'OTHER',
+  'CRICKET_NET', 'BOX_CRICKET', 'FOOTBALL', 'BASKETBALL', 'PICKLEBALL',
+  'TENNIS', 'BADMINTON', 'SWIMMING', 'HOCKEY', 'VOLLEYBALL',
+  'TABLE_TENNIS', 'SNOOKER', 'ARCHERY', 'BOXING', 'GOLF',
+  'SHOOTING', 'SKATEBOARDING', 'TAEKWONDO',
 ]);
 
 const surfaceTypeEnum = z.enum(['SYNTHETIC', 'WOODEN', 'CLAY', 'TURF', 'CONCRETE']);
@@ -23,7 +22,7 @@ const basicDetailsSchema = z.object({
   partnerType: partnerTypeEnum,
   businessName: z.string().min(1, 'Business/Individual name is required').max(200),
   contactPerson: z.string().min(1, 'Contact person is required').max(200),
-  phone: z.string().min(10, 'Phone must be at least 10 digits').max(15),
+  phone: z.string().min(10, 'Phone must be at least 10 digits').max(15).regex(phoneRegex, 'Enter a valid Indian phone number (e.g. 9876543210)'),
   email: z.string().email('Valid email is required'),
   city: z.string().min(1, 'City is required').max(100),
   fullAddress: z.string().min(1, 'Full address is required').max(1000),

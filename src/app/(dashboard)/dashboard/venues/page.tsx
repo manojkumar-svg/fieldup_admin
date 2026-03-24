@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Search, MapPin, Filter, ChevronRight, MoreVertical, ToggleLeft, Trash2, Pencil } from 'lucide-react';
+import { Plus, Search, MapPin, Filter, ChevronRight, MoreVertical, ToggleLeft, Trash2, Pencil, CheckSquare } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 import { StatusBadge, Badge } from '@/components/ui/Badge';
@@ -46,6 +46,7 @@ export default function VenuesPage(): React.ReactElement {
   const [page, setPage] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const queryParams = new URLSearchParams();
   if (search) queryParams.set('search', search);
@@ -96,6 +97,43 @@ export default function VenuesPage(): React.ReactElement {
       toast('Failed to delete venue', 'error');
     },
   });
+
+  const bulkStatusMutation = useMutation({
+    mutationFn: async (newStatus: string) => {
+      const res = await fetch('/api/bulk/status', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entityType: 'venues', ids: Array.from(selectedIds), status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed to bulk update');
+      return res.json();
+    },
+    onSuccess: (_, newStatus) => {
+      queryClient.invalidateQueries({ queryKey: ['venues'] });
+      toast(`${selectedIds.size} venues ${newStatus === 'ACTIVE' ? 'activated' : 'deactivated'}`, 'success');
+      setSelectedIds(new Set());
+    },
+    onError: () => {
+      toast('Failed to update venues', 'error');
+    },
+  });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (!data) return;
+    if (selectedIds.size === data.venues.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(data.venues.map((v) => v.id)));
+    }
+  };
 
   const activeFilters = [sportType, status].filter(Boolean).length;
 
@@ -194,11 +232,39 @@ export default function VenuesPage(): React.ReactElement {
 
       {data && data.venues.length > 0 && (
         <>
+          {/* Bulk Action Bar */}
+          {selectedIds.size > 0 && (
+            <div className="flex items-center gap-3 rounded-xl bg-brand-50 border border-brand-200 px-4 py-2.5 mb-4 animate-fade-in">
+              <CheckSquare className="h-4 w-4 text-brand-600" />
+              <span className="text-sm font-medium text-brand-700">{selectedIds.size} selected</span>
+              <div className="flex items-center gap-2 ml-auto">
+                <Button size="sm" variant="secondary" onClick={() => bulkStatusMutation.mutate('ACTIVE')} disabled={bulkStatusMutation.isPending}>
+                  Activate All
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => bulkStatusMutation.mutate('INACTIVE')} disabled={bulkStatusMutation.isPending}>
+                  Deactivate All
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+                  Clear
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Desktop Table */}
           <div className="hidden md:block rounded-2xl border border-gray-200/80 bg-white overflow-hidden">
             <table className="min-w-full">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/50">
+                  <th className="px-3 py-3.5 text-left">
+                    <input
+                      type="checkbox"
+                      checked={data.venues.length > 0 && selectedIds.size === data.venues.length}
+                      onChange={toggleSelectAll}
+                      className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-2 focus:ring-brand-500"
+                      aria-label="Select all"
+                    />
+                  </th>
                   <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Name</th>
                   <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">City</th>
                   <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Sports</th>
@@ -220,7 +286,31 @@ export default function VenuesPage(): React.ReactElement {
                       className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 cursor-pointer transition-colors"
                       onClick={() => router.push(`/dashboard/venues/${venue.id}`)}
                     >
-                      <td className="px-5 py-3.5 text-sm font-medium text-gray-900">{venue.name}</td>
+                      <td className="px-3 py-3.5" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(venue.id)}
+                          onChange={() => toggleSelect(venue.id)}
+                          className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-2 focus:ring-brand-500"
+                          aria-label={`Select ${venue.name}`}
+                        />
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <div className="flex items-center gap-3">
+                          {venue.images && venue.images.length > 0 ? (
+                            <img
+                              src={venue.images[0]}
+                              alt={venue.name}
+                              className="h-9 w-9 rounded-lg object-cover border border-gray-200 shrink-0"
+                            />
+                          ) : (
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 border border-gray-200 shrink-0">
+                              <MapPin className="h-4 w-4 text-gray-400" />
+                            </div>
+                          )}
+                          <span className="text-sm font-medium text-gray-900">{venue.name}</span>
+                        </div>
+                      </td>
                       <td className="px-5 py-3.5 text-sm text-gray-500">{venue.city}</td>
                       <td className="px-5 py-3.5 text-sm text-gray-500 max-w-[200px] truncate" title={sportsList}>
                         {sportsList || '—'}
@@ -285,9 +375,22 @@ export default function VenuesPage(): React.ReactElement {
                   onClick={() => router.push(`/dashboard/venues/${venue.id}`)}
                 >
                   <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-gray-900 truncate">{venue.name}</h3>
-                      <p className="text-xs text-gray-500 mt-0.5">{venue.city}</p>
+                    <div className="flex items-center gap-3 min-w-0">
+                      {venue.images && venue.images.length > 0 ? (
+                        <img
+                          src={venue.images[0]}
+                          alt={venue.name}
+                          className="h-10 w-10 rounded-lg object-cover border border-gray-200 shrink-0"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 border border-gray-200 shrink-0">
+                          <MapPin className="h-5 w-5 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-semibold text-gray-900 truncate">{venue.name}</h3>
+                        <p className="text-xs text-gray-500 mt-0.5">{venue.city}</p>
+                      </div>
                     </div>
                     <StatusBadge status={venue.status} />
                   </div>

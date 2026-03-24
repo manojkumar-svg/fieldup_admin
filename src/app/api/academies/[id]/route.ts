@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { academySchema, academyStatusSchema } from '@/lib/validations/entities';
 import { getAcademyById, updateAcademy, updateAcademyStatus, deleteAcademy } from '@/lib/services/academies';
+import { createAuditLog } from '@/lib/services/audit';
 
 
 interface RouteParams {
@@ -73,6 +74,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
     }
 
     const academy = await updateAcademy(params.id, parsed.data);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'ACADEMY', entityId: params.id, action: 'UPDATE', changes: parsed.data });
     return NextResponse.json({ academy });
   } catch (error) {
     console.error('Update academy error:', error);
@@ -121,6 +123,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams): Prom
     }
 
     const academy = await updateAcademyStatus(params.id, parsed.data.status);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'ACADEMY', entityId: params.id, action: 'STATUS_CHANGE', changes: { status: parsed.data.status } });
     return NextResponse.json({ academy });
   } catch (error) {
     console.error('Update academy status error:', error);
@@ -150,6 +153,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams): Pr
     }
 
     await deleteAcademy(params.id);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'ACADEMY', entityId: params.id, action: 'DELETE' });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete academy error:', error);

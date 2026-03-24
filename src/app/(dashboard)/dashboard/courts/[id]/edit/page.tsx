@@ -84,6 +84,7 @@ export default function EditCourtPage(): React.ReactElement {
           pricePerHour: court.pricePerHour,
           maxPlayers: court.maxPlayers,
           images: court.images ?? [],
+          cancellationAvailable: court.cancellationAvailable ?? false,
         }
       : undefined,
   });
@@ -189,10 +190,14 @@ export default function EditCourtPage(): React.ReactElement {
               />
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-6 pt-2">
               <Checkbox
                 label="Indoor Court"
                 {...register('indoor')}
+              />
+              <Checkbox
+                label="Cancellation Available"
+                {...register('cancellationAvailable')}
               />
             </div>
           </div>

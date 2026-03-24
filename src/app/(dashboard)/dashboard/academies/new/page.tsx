@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { FileUpload } from '@/components/ui/FileUpload';
+import { LocationPicker } from '@/components/ui/LocationPicker';
 import { useToast } from '@/components/ui/Toast';
 import { SPORT_TYPE_LABELS } from '@/lib/utils';
 
@@ -37,6 +38,8 @@ export default function NewAcademyPage(): React.ReactElement {
     register,
     handleSubmit,
     control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<AcademyInput>({
     resolver: zodResolver(academySchema),
@@ -111,21 +114,39 @@ export default function NewAcademyPage(): React.ReactElement {
 
         <Card variant="bordered">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Location</h2>
-          <div className="space-y-4">
-            <Input label="Address" error={errors.address?.message} {...register('address')} />
-            <div className="grid grid-cols-2 gap-4">
-              <Input label="City" error={errors.city?.message} {...register('city')} />
-              <Input label="State" error={errors.state?.message} {...register('state')} />
-            </div>
-            <Input label="Pincode" error={errors.pincode?.message} {...register('pincode')} />
-          </div>
+          <LocationPicker
+            latitude={watch('latitude')}
+            longitude={watch('longitude')}
+            address={watch('address') ?? ''}
+            city={watch('city') ?? ''}
+            state={watch('state') ?? ''}
+            pincode={watch('pincode') ?? ''}
+            onLocationChange={(loc) => {
+              setValue('latitude', loc.latitude, { shouldValidate: true });
+              setValue('longitude', loc.longitude, { shouldValidate: true });
+              setValue('address', loc.address, { shouldValidate: true });
+              setValue('city', loc.city, { shouldValidate: true });
+              setValue('state', loc.state, { shouldValidate: true });
+              setValue('pincode', loc.pincode, { shouldValidate: true });
+            }}
+            errors={{
+              address: errors.address?.message,
+              city: errors.city?.message,
+              state: errors.state?.message,
+              pincode: errors.pincode?.message,
+            }}
+            registerAddress={register('address')}
+            registerCity={register('city')}
+            registerState={register('state')}
+            registerPincode={register('pincode')}
+          />
         </Card>
 
         <Card variant="bordered">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Contact & Details</h2>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Contact Phone" error={errors.contactPhone?.message} {...register('contactPhone')} />
+              <Input label="Contact Phone" type="tel" inputMode="numeric" placeholder="9876543210" maxLength={15} hint="10 digits starting with 6-9 (e.g. 9876543210)" error={errors.contactPhone?.message} {...register('contactPhone')} />
               <Input label="Contact Email" type="email" error={errors.contactEmail?.message} {...register('contactEmail')} />
             </div>
             <div className="grid grid-cols-2 gap-4">

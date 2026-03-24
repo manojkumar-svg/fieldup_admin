@@ -90,6 +90,8 @@ export async function createVenue(input: VenueInput): Promise<VenueWithSports> {
       amenities: input.amenities ?? [],
       images: input.images ?? [],
       documents: input.documents ?? [],
+      imageTitles: input.imageTitles ?? [],
+      documentTitles: input.documentTitles ?? [],
       contactPhone: input.contactPhone || null,
       contactEmail: input.contactEmail || null,
       status: 'ACTIVE' as EntityStatus,
@@ -120,6 +122,25 @@ export async function createVenue(input: VenueInput): Promise<VenueWithSports> {
 
   if (sportsError) throw sportsError;
 
+  // Insert courts from each sport's courts array
+  const allCourts = input.sports.flatMap((s) =>
+    (s.courts ?? []).map((c) => ({
+      venueId: v.id,
+      name: c.name,
+      sportType: s.sportType,
+      surfaceType: c.surfaceType,
+      indoor: c.indoor ?? false,
+      pricePerHour: s.pricePerHour,
+      maxPlayers: 10,
+      status: 'ACTIVE' as EntityStatus,
+    }))
+  );
+
+  if (allCourts.length > 0) {
+    const { error: courtsError } = await supabase.from('courts').insert(allCourts);
+    if (courtsError) throw courtsError;
+  }
+
   return { ...v, venue_sports: (sports ?? []) as VenueSport[] };
 }
 
@@ -128,7 +149,7 @@ export async function updateVenue(id: string, input: VenueInput): Promise<VenueW
 
   // Update venue
   const updateData: Record<string, unknown> = {};
-  const directFields = ['name', 'address', 'city', 'state', 'pincode', 'amenities', 'images', 'documents'] as const;
+  const directFields = ['name', 'address', 'city', 'state', 'pincode', 'amenities', 'images', 'documents', 'imageTitles', 'documentTitles'] as const;
   for (const field of directFields) {
     if (input[field] !== undefined) updateData[field] = input[field];
   }
@@ -177,6 +198,31 @@ export async function updateVenue(id: string, input: VenueInput): Promise<VenueW
     .select();
 
   if (sportsError) throw sportsError;
+
+  // Replace courts: delete old, insert new from each sport's courts array
+  const { error: deleteCourtError } = await supabase
+    .from('courts')
+    .delete()
+    .eq('venueId', id);
+  if (deleteCourtError) throw deleteCourtError;
+
+  const allCourts = input.sports.flatMap((s) =>
+    (s.courts ?? []).map((c) => ({
+      venueId: id,
+      name: c.name,
+      sportType: s.sportType,
+      surfaceType: c.surfaceType,
+      indoor: c.indoor ?? false,
+      pricePerHour: s.pricePerHour,
+      maxPlayers: 10,
+      status: 'ACTIVE' as EntityStatus,
+    }))
+  );
+
+  if (allCourts.length > 0) {
+    const { error: courtsError } = await supabase.from('courts').insert(allCourts);
+    if (courtsError) throw courtsError;
+  }
 
   return { ...v, venue_sports: (sports ?? []) as VenueSport[] };
 }

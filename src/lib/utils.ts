@@ -16,53 +16,31 @@ export function formatCurrency(amount: number): string {
 }
 
 export const SPORT_TYPE_LABELS: Record<string, string> = {
-  CRICKET: 'Cricket',
+  CRICKET_NET: 'Cricket Net',
+  BOX_CRICKET: 'Box Cricket',
   FOOTBALL: 'Football',
   BASKETBALL: 'Basketball',
+  PICKLEBALL: 'Pickleball',
   TENNIS: 'Tennis',
   BADMINTON: 'Badminton',
   SWIMMING: 'Swimming',
   HOCKEY: 'Hockey',
   VOLLEYBALL: 'Volleyball',
   TABLE_TENNIS: 'Table Tennis',
-  SQUASH: 'Squash',
-  AQUATICS: 'Aquatics',
+  SNOOKER: 'Snooker',
   ARCHERY: 'Archery',
-  ATHLETICS: 'Athletics',
-  BEACH_VOLLEYBALL: 'Beach Volleyball',
   BOXING: 'Boxing',
-  BREAKING: 'Breaking',
-  CANOEING: 'Canoeing',
-  CYCLING: 'Cycling',
-  EQUESTRIAN: 'Equestrian',
-  FENCING: 'Fencing',
   GOLF: 'Golf',
-  GYMNASTICS: 'Gymnastics',
-  HANDBALL: 'Handball',
-  JUDO: 'Judo',
-  KARATE: 'Karate',
-  MMA: 'MMA',
-  MODERN_PENTATHLON: 'Modern Pentathlon',
-  PICKLEBALL: 'Pickleball',
-  ROWING: 'Rowing',
-  RUGBY_SEVENS: 'Rugby Sevens',
-  SAILING: 'Sailing',
   SHOOTING: 'Shooting',
   SKATEBOARDING: 'Skateboarding',
-  SPORT_CLIMBING: 'Sport Climbing',
-  SURFING: 'Surfing',
   TAEKWONDO: 'Taekwondo',
-  TRIATHLON: 'Triathlon',
-  UFC: 'UFC',
-  WEIGHTLIFTING: 'Weightlifting',
-  WRESTLING: 'Wrestling',
-  OTHER: 'Other',
 };
 
 export const PARTNER_TYPE_LABELS: Record<string, string> = {
   VENUE: 'Venue / Court',
   COACH: 'Coach / Trainer',
   ACADEMY: 'Academy',
+  GYM: 'Gym',
 };
 
 export const ONBOARDING_STATUS_LABELS: Record<string, string> = {
@@ -95,6 +73,25 @@ export const DAY_LABELS: Record<string, string> = {
   SAT: 'Saturday',
   SUN: 'Sunday',
 };
+
+/** Sport-specific terminology for the "unit" (court, pool, mat, ring, etc.) */
+export const SPORT_UNIT_LABELS: Record<string, { singular: string; plural: string }> = {
+  CRICKET_NET: { singular: 'Net', plural: 'Nets' },
+  BOX_CRICKET: { singular: 'Box', plural: 'Boxes' },
+  SWIMMING: { singular: 'Pool', plural: 'Pools' },
+  BOXING: { singular: 'Ring', plural: 'Rings' },
+  TAEKWONDO: { singular: 'Mat', plural: 'Mats' },
+  SHOOTING: { singular: 'Lane', plural: 'Lanes' },
+  ARCHERY: { singular: 'Lane', plural: 'Lanes' },
+  GOLF: { singular: 'Hole', plural: 'Holes' },
+  SKATEBOARDING: { singular: 'Ramp', plural: 'Ramps' },
+  SNOOKER: { singular: 'Table', plural: 'Tables' },
+};
+
+/** Get the sport-specific unit label, defaulting to "Court"/"Courts" */
+export function getSportUnitLabel(sportType: string): { singular: string; plural: string } {
+  return SPORT_UNIT_LABELS[sportType] ?? { singular: 'Court', plural: 'Courts' };
+}
 
 export const CITY_OPTIONS = [
   'Delhi',

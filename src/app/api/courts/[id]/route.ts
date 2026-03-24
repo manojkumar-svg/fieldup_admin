@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { courtSchema, courtStatusSchema } from '@/lib/validations/entities';
 import { getCourtById, updateCourt, updateCourtStatus, deleteCourt } from '@/lib/services/courts';
+import { createAuditLog } from '@/lib/services/audit';
 
 interface RouteParams {
   params: { id: string };
@@ -72,6 +73,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
     }
 
     const court = await updateCourt(params.id, parsed.data);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'COURT', entityId: params.id, action: 'UPDATE', changes: parsed.data });
     return NextResponse.json({ court });
   } catch (error) {
     console.error('Update court error:', error);
@@ -120,6 +122,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams): Prom
     }
 
     const court = await updateCourtStatus(params.id, parsed.data.status);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'COURT', entityId: params.id, action: 'STATUS_CHANGE', changes: { status: parsed.data.status } });
     return NextResponse.json({ court });
   } catch (error) {
     console.error('Update court status error:', error);
@@ -149,6 +152,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams): Pr
     }
 
     await deleteCourt(params.id);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'COURT', entityId: params.id, action: 'DELETE' });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete court error:', error);

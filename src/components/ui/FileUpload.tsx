@@ -10,6 +10,7 @@ import {
   ScanLine,
   Eye,
   Pencil,
+  GripVertical,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { DocumentScanner } from '@/components/ui/DocumentScanner';
@@ -333,6 +334,40 @@ export function FileUpload({
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [editTitleIndex, setEditTitleIndex] = useState<number | null>(null);
 
+  // Drag to reorder state
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = useCallback((idx: number) => {
+    setDragIndex(idx);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent, idx: number) => {
+    e.preventDefault();
+    setDragOverIndex(idx);
+  }, []);
+
+  const handleDrop = useCallback((idx: number) => {
+    if (dragIndex === null || dragIndex === idx) {
+      setDragIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+    const newUrls = [...value];
+    const [moved] = newUrls.splice(dragIndex, 1);
+    newUrls.splice(idx, 0, moved);
+    onChange(newUrls);
+
+    if (titles.length > 0 && onTitlesChange) {
+      const newTitles = [...titles];
+      const [movedTitle] = newTitles.splice(dragIndex, 1);
+      newTitles.splice(idx, 0, movedTitle);
+      onTitlesChange(newTitles);
+    }
+    setDragIndex(null);
+    setDragOverIndex(null);
+  }, [dragIndex, value, onChange, titles, onTitlesChange]);
+
   const canAddMore = value.length + pendingFiles.length < maxFiles;
   const remaining = maxFiles - value.length - pendingFiles.length;
 
@@ -468,14 +503,29 @@ export function FileUpload({
           {value.map((url, idx) => (
             <div
               key={idx}
-              className={`relative group rounded-lg border border-gray-200 overflow-hidden cursor-pointer ${
+              draggable
+              onDragStart={() => handleDragStart(idx)}
+              onDragOver={(e) => handleDragOver(e, idx)}
+              onDrop={() => handleDrop(idx)}
+              onDragEnd={() => { setDragIndex(null); setDragOverIndex(null); }}
+              className={`relative group rounded-lg border overflow-hidden cursor-pointer transition-all ${
                 type === 'image' ? 'aspect-square' : 'flex items-center gap-3 p-3'
+              } ${dragOverIndex === idx ? 'border-brand-400 ring-2 ring-brand-200' : 'border-gray-200'} ${
+                dragIndex === idx ? 'opacity-40' : ''
               }`}
               onClick={() => setPreviewIndex(idx)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => { if (e.key === 'Enter') setPreviewIndex(idx); }}
             >
+              {/* Drag handle */}
+              {type === 'image' && value.length > 1 && (
+                <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <span className="rounded bg-black/60 p-0.5 text-white block cursor-grab">
+                    <GripVertical className="h-3 w-3" />
+                  </span>
+                </div>
+              )}
               {(type === 'image' || isImagePreviewable(url)) ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

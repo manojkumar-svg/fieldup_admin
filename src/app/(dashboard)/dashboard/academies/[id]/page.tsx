@@ -20,6 +20,7 @@ import {
   Dumbbell,
   Image as ImageIcon,
   FileText,
+  GraduationCap,
 } from 'lucide-react';
 import type { Academy } from '@/types/database';
 
@@ -81,7 +82,6 @@ export default function AcademyDetailPage(): React.ReactElement {
     <div>
       <PageHeader
         title={academy.name}
-        subtitle={`${academy.city}, ${academy.state}`}
         backHref="/dashboard/academies"
         action={
           <Button onClick={() => router.push(`/dashboard/academies/${id}/edit`)}>
@@ -91,28 +91,56 @@ export default function AcademyDetailPage(): React.ReactElement {
         }
       />
 
-      <div className="flex items-center gap-3 mb-6">
-        <Badge variant={academy.status === 'ACTIVE' ? 'success' : 'error'} size="md">
-          {academy.status}
-        </Badge>
-        {academy.establishedYear && (
-          <span className="text-sm text-gray-500">
-            Est. {academy.establishedYear}
-          </span>
-        )}
-        <span className="text-sm text-gray-500">
-          Created {new Date(academy.createdAt).toLocaleDateString()}
-        </span>
-      </div>
-
       <div className="space-y-6 max-w-4xl">
-        {/* Description */}
-        {academy.description && (
-          <Card variant="bordered">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">About</h2>
-            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{academy.description}</p>
-          </Card>
-        )}
+        {/* Profile Hero */}
+        <Card variant="bordered">
+          <div className="flex items-start gap-6">
+            {/* Thumbnail */}
+            <div className="shrink-0">
+              {academy.images && academy.images.length > 0 ? (
+                <a
+                  href={academy.images[0]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-28 w-28 rounded-2xl overflow-hidden border-2 border-gray-200 hover:border-brand-400 transition-colors"
+                >
+                  <img
+                    src={academy.images[0]}
+                    alt={academy.name}
+                    className="h-full w-full object-cover"
+                  />
+                </a>
+              ) : (
+                <div className="flex items-center justify-center h-28 w-28 rounded-2xl bg-gray-100 border-2 border-gray-200">
+                  <GraduationCap className="h-10 w-10 text-gray-400" />
+                </div>
+              )}
+            </div>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-xl font-bold text-gray-900">{academy.name}</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {academy.city}, {academy.state}
+              </p>
+              <div className="flex flex-wrap items-center gap-3 mt-3">
+                <Badge variant={academy.status === 'ACTIVE' ? 'success' : 'error'} size="md">
+                  {academy.status}
+                </Badge>
+                {academy.establishedYear && (
+                  <span className="text-sm text-gray-500">
+                    Est. {academy.establishedYear}
+                  </span>
+                )}
+                <span className="text-sm text-gray-500">
+                  Created {new Date(academy.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+              {academy.description && (
+                <p className="text-sm text-gray-600 mt-3 line-clamp-2">{academy.description}</p>
+              )}
+            </div>
+          </div>
+        </Card>
 
         {/* Sports Offered */}
         {academy.sportsOffered.length > 0 && (

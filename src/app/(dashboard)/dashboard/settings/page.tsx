@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { Shield, Database, Bell, Palette, CheckCircle2 } from 'lucide-react';
+import { Shield, Bell, Palette, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
 interface UserProfile {
@@ -58,26 +58,6 @@ export default function SettingsPage(): React.ReactElement {
           ) : (
             <p className="text-sm text-gray-500">Unable to load profile</p>
           )}
-        </Card>
-
-        {/* System Info */}
-        <Card>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-50 ring-1 ring-sky-100">
-              <Database className="h-5 w-5 text-sky-600" />
-            </div>
-            <div>
-              <h2 className="text-base font-semibold text-gray-900">System Information</h2>
-              <p className="text-xs text-gray-500">Application configuration</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <InfoField label="Framework" value="Next.js 14 (App Router)" />
-            <InfoField label="Database" value="Supabase PostgreSQL" />
-            <InfoField label="Authentication" value="Supabase Auth" />
-            <InfoField label="Storage" value="Supabase Storage" />
-          </div>
         </Card>
 
         {/* Modules */}

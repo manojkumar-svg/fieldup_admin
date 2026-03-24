@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { courtSchema } from '@/lib/validations/entities';
 import { listCourts, createCourt } from '@/lib/services/courts';
+import { createAuditLog } from '@/lib/services/audit';
 import type { SportType, EntityStatus } from '@/types/database';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const court = await createCourt(parsed.data);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'COURT', entityId: court.id, action: 'CREATE', changes: parsed.data });
     return NextResponse.json({ court }, { status: 201 });
   } catch (error) {
     console.error('Create court error:', error);

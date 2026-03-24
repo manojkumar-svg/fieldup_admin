@@ -1,5 +1,5 @@
 export type { UserRole, EntityStatus, SportType, PartnerType, OnboardingStatus, SurfaceType, SlotDuration, DayOfWeek } from '@/types/database';
-export type { Venue, VenueSport, VenueWithSports, Academy, Trainer, Court, CourtWithVenue, VenueImage, OnboardingApplication, Database } from '@/types/database';
+export type { Venue, VenueSport, VenueWithSports, Academy, Trainer, Court, CourtWithVenue, Gym, YogaStudio, ZumbaStudio, VenueImage, OnboardingApplication, Database } from '@/types/database';
 
 export interface AuthUser {
   id: string;
@@ -20,12 +20,19 @@ export interface DashboardStats {
   totalAcademies: number;
   totalTrainers: number;
   totalCourts: number;
+  totalGyms: number;
+  totalYogaStudios: number;
+  totalZumbaStudios: number;
   activeVenues: number;
   activeAcademies: number;
   activeTrainers: number;
   activeCourts: number;
+  activeGyms: number;
+  activeYogaStudios: number;
+  activeZumbaStudios: number;
   pendingApprovals: number;
   recentlyAdded: RecentEntity[];
+  incompleteProfiles: IncompleteProfile[];
   onboarding: {
     total: number;
     pending: number;
@@ -35,12 +42,20 @@ export interface DashboardStats {
   };
 }
 
+export interface IncompleteProfile {
+  id: string;
+  name: string;
+  type: 'Venue' | 'Academy' | 'Trainer' | 'Gym' | 'Yoga Studio' | 'Zumba Studio';
+  missingFields: string[];
+}
+
 export interface RecentEntity {
   id: string;
   name: string;
-  type: 'Venue' | 'Academy' | 'Trainer';
+  type: 'Venue' | 'Academy' | 'Trainer' | 'Gym' | 'Yoga Studio' | 'Zumba Studio';
   createdAt: string;
   status: string;
+  photo?: string | null;
 }
 
 export interface ApiError {

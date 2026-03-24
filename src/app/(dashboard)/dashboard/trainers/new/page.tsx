@@ -14,6 +14,8 @@ import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { TagInput } from '@/components/ui/TagInput';
 import { FileUpload } from '@/components/ui/FileUpload';
+import { LocationPicker } from '@/components/ui/LocationPicker';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { useToast } from '@/components/ui/Toast';
 import { SPORT_TYPE_LABELS } from '@/lib/utils';
 
@@ -31,6 +33,8 @@ export default function NewTrainerPage(): React.ReactElement {
     register,
     handleSubmit,
     control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<TrainerInput>({
     resolver: zodResolver(trainerSchema),
@@ -38,6 +42,13 @@ export default function NewTrainerPage(): React.ReactElement {
       certifications: [],
       images: [],
       documents: [],
+      imageTitles: [],
+      documentTitles: [],
+      cancellationAvailable: false,
+      kidsTraining: false,
+      groupSessions: false,
+      oneOnOneCoaching: false,
+      sessionConfig: {},
     },
   });
 
@@ -68,14 +79,17 @@ export default function NewTrainerPage(): React.ReactElement {
     <div>
       <PageHeader title="Add Trainer" backHref="/dashboard/trainers" />
 
-      <form onSubmit={handleSubmit((d) => createMutation.mutate(d))} className="space-y-6 max-w-3xl">
+      <form onSubmit={handleSubmit((d) => {
+        const submitData = { ...d, photo: d.photo || (d.images && d.images.length > 0 ? d.images[0] : '') };
+        createMutation.mutate(submitData);
+      })} className="space-y-6 max-w-3xl">
         <Card variant="bordered">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
           <div className="space-y-4">
             <Input label="Name" error={errors.name?.message} {...register('name')} />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
-              <Input label="Phone" error={errors.phone?.message} {...register('phone')} />
+              <Input label="Phone" type="tel" inputMode="numeric" placeholder="9876543210" maxLength={15} hint="10 digits starting with 6-9 (e.g. 9876543210)" error={errors.phone?.message} {...register('phone')} />
             </div>
             <Textarea label="Bio" error={errors.bio?.message} {...register('bio')} />
           </div>
@@ -123,11 +137,93 @@ export default function NewTrainerPage(): React.ReactElement {
 
         <Card variant="bordered">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Location</h2>
+          <LocationPicker
+            latitude={watch('latitude')}
+            longitude={watch('longitude')}
+            address={watch('address') ?? ''}
+            city={watch('city') ?? ''}
+            state={watch('state') ?? ''}
+            pincode={watch('pincode') ?? ''}
+            onLocationChange={(loc) => {
+              setValue('latitude', loc.latitude, { shouldValidate: true });
+              setValue('longitude', loc.longitude, { shouldValidate: true });
+              setValue('address', loc.address, { shouldValidate: true });
+              setValue('city', loc.city, { shouldValidate: true });
+              setValue('state', loc.state, { shouldValidate: true });
+              setValue('pincode', loc.pincode, { shouldValidate: true });
+            }}
+            errors={{
+              address: errors.address?.message,
+              city: errors.city?.message,
+              state: errors.state?.message,
+              pincode: errors.pincode?.message,
+            }}
+            registerAddress={register('address')}
+            registerCity={register('city')}
+            registerState={register('state')}
+            registerPincode={register('pincode')}
+          />
+        </Card>
+
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Policies</h2>
+          <div className="flex items-center gap-6">
+            <Checkbox
+              label="Cancellation Available"
+              {...register('cancellationAvailable')}
+            />
+          </div>
+        </Card>
+
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Session Configuration</h2>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Input label="City" error={errors.city?.message} {...register('city')} />
-              <Input label="State" error={errors.state?.message} {...register('state')} />
+            <div className="flex flex-wrap gap-6">
+              <Checkbox label="Kids Training" {...register('kidsTraining')} />
+              <Checkbox label="Group Sessions" {...register('groupSessions')} />
+              <Checkbox label="1:1 Coaching" {...register('oneOnOneCoaching')} />
             </div>
+
+            {watch('kidsTraining') && (
+              <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-medium text-gray-700">Kids Training Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Timings" placeholder="e.g. Mon-Fri 4PM-6PM" {...register('sessionConfig.kids.timings')} />
+                  <Input label="Fee (₹)" type="number" {...register('sessionConfig.kids.fee')} />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <Input label="Max Capacity" type="number" {...register('sessionConfig.kids.maxCapacity')} />
+                  <Input label="Min Age" type="number" {...register('sessionConfig.kids.ageMin')} />
+                  <Input label="Max Age" type="number" {...register('sessionConfig.kids.ageMax')} />
+                </div>
+              </div>
+            )}
+
+            {watch('groupSessions') && (
+              <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-medium text-gray-700">Group Session Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Timings" placeholder="e.g. Sat-Sun 8AM-10AM" {...register('sessionConfig.group.timings')} />
+                  <Input label="Fee (₹)" type="number" {...register('sessionConfig.group.fee')} />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <Input label="Max Capacity" type="number" {...register('sessionConfig.group.maxCapacity')} />
+                  <Input label="Min Age" type="number" {...register('sessionConfig.group.ageMin')} />
+                  <Input label="Max Age" type="number" {...register('sessionConfig.group.ageMax')} />
+                </div>
+              </div>
+            )}
+
+            {watch('oneOnOneCoaching') && (
+              <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-medium text-gray-700">1:1 Coaching Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <Input label="Timings" placeholder="e.g. By appointment" {...register('sessionConfig.oneOnOne.timings')} />
+                  <Input label="Fee (₹)" type="number" {...register('sessionConfig.oneOnOne.fee')} />
+                </div>
+                <Input label="Max Capacity" type="number" {...register('sessionConfig.oneOnOne.maxCapacity')} />
+              </div>
+            )}
           </div>
         </Card>
 
@@ -138,14 +234,22 @@ export default function NewTrainerPage(): React.ReactElement {
               name="images"
               control={control}
               render={({ field }) => (
-                <FileUpload
-                  label="Trainer Images"
-                  value={field.value ?? []}
-                  onChange={field.onChange}
-                  type="image"
-                  accept="image/*"
-                  maxFiles={10}
-                  hint="Upload photos of the trainer (max 10)"
+                <Controller
+                  name="imageTitles"
+                  control={control}
+                  render={({ field: titlesField }) => (
+                    <FileUpload
+                      label="Trainer Images"
+                      value={field.value ?? []}
+                      onChange={field.onChange}
+                      titles={titlesField.value ?? []}
+                      onTitlesChange={titlesField.onChange}
+                      type="image"
+                      accept="image/*"
+                      maxFiles={10}
+                      hint="Upload photos of the trainer (max 10). First image becomes profile photo."
+                    />
+                  )}
                 />
               )}
             />
@@ -153,14 +257,22 @@ export default function NewTrainerPage(): React.ReactElement {
               name="documents"
               control={control}
               render={({ field }) => (
-                <FileUpload
-                  label="Documents"
-                  value={field.value ?? []}
-                  onChange={field.onChange}
-                  type="document"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                  maxFiles={5}
-                  hint="Certificates, ID proofs, or other documents (max 5)"
+                <Controller
+                  name="documentTitles"
+                  control={control}
+                  render={({ field: titlesField }) => (
+                    <FileUpload
+                      label="Documents"
+                      value={field.value ?? []}
+                      onChange={field.onChange}
+                      titles={titlesField.value ?? []}
+                      onTitlesChange={titlesField.onChange}
+                      type="document"
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      maxFiles={5}
+                      hint="Certificates, ID proofs, or other documents (max 5)"
+                    />
+                  )}
                 />
               )}
             />

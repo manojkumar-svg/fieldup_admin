@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { venueSchema, venueStatusSchema } from '@/lib/validations/entities';
 import { getVenueById, updateVenue, updateVenueStatus, deleteVenue } from '@/lib/services/venues';
+import { createAuditLog } from '@/lib/services/audit';
 
 interface RouteParams {
   params: { id: string };
@@ -56,6 +57,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
     const parsed = venueSchema.safeParse(body);
 
     if (!parsed.success) {
+      console.error('Venue validation errors:', JSON.stringify(parsed.error.errors, null, 2));
       return NextResponse.json(
         {
           error: {
@@ -72,11 +74,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
     }
 
     const venue = await updateVenue(params.id, parsed.data);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'VENUE', entityId: params.id, action: 'UPDATE', changes: parsed.data });
     return NextResponse.json({ venue });
   } catch (error) {
-    console.error('Update venue error:', error);
+    const errMsg = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Update venue error:', errMsg, error);
     return NextResponse.json(
-      { error: { code: 'INTERNAL_ERROR', message: 'Failed to update venue' } },
+      { error: { code: 'INTERNAL_ERROR', message: 'Failed to update venue', detail: errMsg } },
       { status: 500 }
     );
   }
@@ -120,6 +124,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams): Prom
     }
 
     const venue = await updateVenueStatus(params.id, parsed.data.status);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'VENUE', entityId: params.id, action: 'STATUS_CHANGE', changes: { status: parsed.data.status } });
     return NextResponse.json({ venue });
   } catch (error) {
     console.error('Update venue status error:', error);
@@ -149,6 +154,7 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams): Pr
     }
 
     await deleteVenue(params.id);
+    await createAuditLog({ userId: session.user.id, userEmail: session.user.email, entityType: 'VENUE', entityId: params.id, action: 'DELETE' });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete venue error:', error);
