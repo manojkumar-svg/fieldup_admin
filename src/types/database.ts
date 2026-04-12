@@ -78,7 +78,9 @@ export interface Academy {
 }
 
 export interface SessionDetail {
-  timings: string;
+  startTime?: string;
+  endTime?: string;
+  days?: DayOfWeek[];
   fee: number;
   maxCapacity: number;
   ageMin?: number;

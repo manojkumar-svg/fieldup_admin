@@ -17,6 +17,7 @@ import { FileUpload } from '@/components/ui/FileUpload';
 import { LocationPicker } from '@/components/ui/LocationPicker';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { useToast } from '@/components/ui/Toast';
+import { SessionTimingPicker } from '@/components/ui/SessionTimingPicker';
 import { SPORT_TYPE_LABELS } from '@/lib/utils';
 
 const sportOptions = Object.entries(SPORT_TYPE_LABELS).map(([value, label]) => ({
@@ -185,14 +186,41 @@ export default function NewTrainerPage(): React.ReactElement {
             </div>
 
             {watch('kidsTraining') && (
-              <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+              <div className="border border-gray-200 rounded-lg p-4 space-y-4">
                 <h3 className="text-sm font-medium text-gray-700">Kids Training Details</h3>
+                <Controller
+                  name="sessionConfig.kids.startTime"
+                  control={control}
+                  render={({ field: startField }) => (
+                    <Controller
+                      name="sessionConfig.kids.endTime"
+                      control={control}
+                      render={({ field: endField }) => (
+                        <Controller
+                          name="sessionConfig.kids.days"
+                          control={control}
+                          render={({ field: daysField }) => (
+                            <SessionTimingPicker
+                              startTime={startField.value ?? ''}
+                              endTime={endField.value ?? ''}
+                              days={daysField.value ?? []}
+                              onStartTimeChange={startField.onChange}
+                              onEndTimeChange={endField.onChange}
+                              onDaysChange={daysField.onChange}
+                              startTimeError={errors.sessionConfig?.kids?.startTime?.message}
+                              endTimeError={errors.sessionConfig?.kids?.endTime?.message}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  )}
+                />
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="Timings" placeholder="e.g. Mon-Fri 4PM-6PM" {...register('sessionConfig.kids.timings')} />
                   <Input label="Fee (₹)" type="number" {...register('sessionConfig.kids.fee')} />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
                   <Input label="Max Capacity" type="number" {...register('sessionConfig.kids.maxCapacity')} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <Input label="Min Age" type="number" {...register('sessionConfig.kids.ageMin')} />
                   <Input label="Max Age" type="number" {...register('sessionConfig.kids.ageMax')} />
                 </div>
@@ -200,14 +228,41 @@ export default function NewTrainerPage(): React.ReactElement {
             )}
 
             {watch('groupSessions') && (
-              <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+              <div className="border border-gray-200 rounded-lg p-4 space-y-4">
                 <h3 className="text-sm font-medium text-gray-700">Group Session Details</h3>
+                <Controller
+                  name="sessionConfig.group.startTime"
+                  control={control}
+                  render={({ field: startField }) => (
+                    <Controller
+                      name="sessionConfig.group.endTime"
+                      control={control}
+                      render={({ field: endField }) => (
+                        <Controller
+                          name="sessionConfig.group.days"
+                          control={control}
+                          render={({ field: daysField }) => (
+                            <SessionTimingPicker
+                              startTime={startField.value ?? ''}
+                              endTime={endField.value ?? ''}
+                              days={daysField.value ?? []}
+                              onStartTimeChange={startField.onChange}
+                              onEndTimeChange={endField.onChange}
+                              onDaysChange={daysField.onChange}
+                              startTimeError={errors.sessionConfig?.group?.startTime?.message}
+                              endTimeError={errors.sessionConfig?.group?.endTime?.message}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  )}
+                />
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="Timings" placeholder="e.g. Sat-Sun 8AM-10AM" {...register('sessionConfig.group.timings')} />
                   <Input label="Fee (₹)" type="number" {...register('sessionConfig.group.fee')} />
-                </div>
-                <div className="grid grid-cols-3 gap-4">
                   <Input label="Max Capacity" type="number" {...register('sessionConfig.group.maxCapacity')} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <Input label="Min Age" type="number" {...register('sessionConfig.group.ageMin')} />
                   <Input label="Max Age" type="number" {...register('sessionConfig.group.ageMax')} />
                 </div>
@@ -215,13 +270,40 @@ export default function NewTrainerPage(): React.ReactElement {
             )}
 
             {watch('oneOnOneCoaching') && (
-              <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+              <div className="border border-gray-200 rounded-lg p-4 space-y-4">
                 <h3 className="text-sm font-medium text-gray-700">1:1 Coaching Details</h3>
+                <Controller
+                  name="sessionConfig.oneOnOne.startTime"
+                  control={control}
+                  render={({ field: startField }) => (
+                    <Controller
+                      name="sessionConfig.oneOnOne.endTime"
+                      control={control}
+                      render={({ field: endField }) => (
+                        <Controller
+                          name="sessionConfig.oneOnOne.days"
+                          control={control}
+                          render={({ field: daysField }) => (
+                            <SessionTimingPicker
+                              startTime={startField.value ?? ''}
+                              endTime={endField.value ?? ''}
+                              days={daysField.value ?? []}
+                              onStartTimeChange={startField.onChange}
+                              onEndTimeChange={endField.onChange}
+                              onDaysChange={daysField.onChange}
+                              startTimeError={errors.sessionConfig?.oneOnOne?.startTime?.message}
+                              endTimeError={errors.sessionConfig?.oneOnOne?.endTime?.message}
+                            />
+                          )}
+                        />
+                      )}
+                    />
+                  )}
+                />
                 <div className="grid grid-cols-2 gap-4">
-                  <Input label="Timings" placeholder="e.g. By appointment" {...register('sessionConfig.oneOnOne.timings')} />
                   <Input label="Fee (₹)" type="number" {...register('sessionConfig.oneOnOne.fee')} />
+                  <Input label="Max Capacity" type="number" {...register('sessionConfig.oneOnOne.maxCapacity')} />
                 </div>
-                <Input label="Max Capacity" type="number" {...register('sessionConfig.oneOnOne.maxCapacity')} />
               </div>
             )}
           </div>

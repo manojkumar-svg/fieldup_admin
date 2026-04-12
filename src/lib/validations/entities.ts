@@ -99,7 +99,9 @@ export type AcademyInput = z.infer<typeof academySchema>;
 export type AcademyStatusInput = z.infer<typeof academyStatusSchema>;
 
 const sessionDetailSchema = z.object({
-  timings: z.string().max(200).optional().or(z.literal('')),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, 'Use HH:MM format').optional().or(z.literal('')),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/, 'Use HH:MM format').optional().or(z.literal('')),
+  days: z.array(dayOfWeekEnum).optional().default([]),
   fee: z.coerce.number().min(0, 'Fee must be non-negative').optional().default(0),
   maxCapacity: z.coerce.number().int().min(1).max(500).optional().default(1),
   ageMin: z.coerce.number().int().min(1).max(100).optional().nullable(),

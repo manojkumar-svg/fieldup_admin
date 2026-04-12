@@ -27,7 +27,45 @@ import {
   CheckCircle2,
   XCircle,
 } from 'lucide-react';
-import type { Trainer } from '@/types/database';
+import type { Trainer, DayOfWeek } from '@/types/database';
+
+const DAY_SHORT: Record<DayOfWeek, string> = {
+  MON: 'Mon', TUE: 'Tue', WED: 'Wed', THU: 'Thu', FRI: 'Fri', SAT: 'Sat', SUN: 'Sun',
+};
+
+function formatTime(t: string | undefined): string {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  if (Number.isNaN(h)) return t;
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, '0')} ${ampm}`;
+}
+
+function SessionTimingDisplay({ startTime, endTime, days }: {
+  readonly startTime?: string; readonly endTime?: string; readonly days?: DayOfWeek[];
+}): React.ReactElement | null {
+  if (!startTime && !endTime && (!days || days.length === 0)) return null;
+  return (
+    <div className="space-y-1.5">
+      {(startTime || endTime) && (
+        <div className="flex items-center gap-1.5 text-sm text-gray-900">
+          <Clock className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+          <span>{formatTime(startTime)}{endTime ? ` – ${formatTime(endTime)}` : ''}</span>
+        </div>
+      )}
+      {days && days.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {days.map((d) => (
+            <span key={d} className="px-2 py-0.5 rounded bg-brand-50 text-brand-700 text-xs font-medium border border-brand-100">
+              {DAY_SHORT[d]}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function InfoRow({ icon: Icon, label, value }: {
   icon: React.ElementType;
@@ -260,13 +298,19 @@ export default function TrainerDetailPage(): React.ReactElement {
                     <Baby className="h-4 w-4 text-brand-600" />
                     <h3 className="text-sm font-semibold text-gray-900">Kids Training</h3>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-                    {trainer.sessionConfig.kids.timings && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Timings</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.timings}</p></div>}
-                    {trainer.sessionConfig.kids.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.kids.fee)}</p></div>}
-                    {trainer.sessionConfig.kids.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.maxCapacity}</p></div>}
-                    {(trainer.sessionConfig.kids.ageMin != null || trainer.sessionConfig.kids.ageMax != null) && (
-                      <div><p className="text-xs text-gray-500 uppercase tracking-wide">Age Range</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.ageMin ?? '—'} – {trainer.sessionConfig.kids.ageMax ?? '—'} yrs</p></div>
-                    )}
+                  <div className="space-y-3 text-sm">
+                    <SessionTimingDisplay
+                      startTime={trainer.sessionConfig.kids.startTime}
+                      endTime={trainer.sessionConfig.kids.endTime}
+                      days={trainer.sessionConfig.kids.days}
+                    />
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {trainer.sessionConfig.kids.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.kids.fee)}</p></div>}
+                      {trainer.sessionConfig.kids.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.maxCapacity}</p></div>}
+                      {(trainer.sessionConfig.kids.ageMin != null || trainer.sessionConfig.kids.ageMax != null) && (
+                        <div><p className="text-xs text-gray-500 uppercase tracking-wide">Age Range</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.ageMin ?? '—'} – {trainer.sessionConfig.kids.ageMax ?? '—'} yrs</p></div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -276,13 +320,19 @@ export default function TrainerDetailPage(): React.ReactElement {
                     <Users className="h-4 w-4 text-brand-600" />
                     <h3 className="text-sm font-semibold text-gray-900">Group Sessions</h3>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-                    {trainer.sessionConfig.group.timings && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Timings</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.timings}</p></div>}
-                    {trainer.sessionConfig.group.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.group.fee)}</p></div>}
-                    {trainer.sessionConfig.group.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.maxCapacity}</p></div>}
-                    {(trainer.sessionConfig.group.ageMin != null || trainer.sessionConfig.group.ageMax != null) && (
-                      <div><p className="text-xs text-gray-500 uppercase tracking-wide">Age Range</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.ageMin ?? '—'} – {trainer.sessionConfig.group.ageMax ?? '—'} yrs</p></div>
-                    )}
+                  <div className="space-y-3 text-sm">
+                    <SessionTimingDisplay
+                      startTime={trainer.sessionConfig.group.startTime}
+                      endTime={trainer.sessionConfig.group.endTime}
+                      days={trainer.sessionConfig.group.days}
+                    />
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {trainer.sessionConfig.group.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.group.fee)}</p></div>}
+                      {trainer.sessionConfig.group.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.maxCapacity}</p></div>}
+                      {(trainer.sessionConfig.group.ageMin != null || trainer.sessionConfig.group.ageMax != null) && (
+                        <div><p className="text-xs text-gray-500 uppercase tracking-wide">Age Range</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.ageMin ?? '—'} – {trainer.sessionConfig.group.ageMax ?? '—'} yrs</p></div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -292,10 +342,16 @@ export default function TrainerDetailPage(): React.ReactElement {
                     <User className="h-4 w-4 text-brand-600" />
                     <h3 className="text-sm font-semibold text-gray-900">1:1 Coaching</h3>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-                    {trainer.sessionConfig.oneOnOne.timings && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Timings</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.oneOnOne.timings}</p></div>}
-                    {trainer.sessionConfig.oneOnOne.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.oneOnOne.fee)}</p></div>}
-                    {trainer.sessionConfig.oneOnOne.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.oneOnOne.maxCapacity}</p></div>}
+                  <div className="space-y-3 text-sm">
+                    <SessionTimingDisplay
+                      startTime={trainer.sessionConfig.oneOnOne.startTime}
+                      endTime={trainer.sessionConfig.oneOnOne.endTime}
+                      days={trainer.sessionConfig.oneOnOne.days}
+                    />
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {trainer.sessionConfig.oneOnOne.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.oneOnOne.fee)}</p></div>}
+                      {trainer.sessionConfig.oneOnOne.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.oneOnOne.maxCapacity}</p></div>}
+                    </div>
                   </div>
                 </div>
               )}
