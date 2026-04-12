@@ -22,6 +22,10 @@ import {
   User,
   Image as ImageIcon,
   FileText,
+  Users,
+  Baby,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import type { Trainer } from '@/types/database';
 
@@ -198,21 +202,103 @@ export default function TrainerDetailPage(): React.ReactElement {
               <h2 className="text-lg font-semibold text-gray-900">Images ({trainer.images.length})</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {trainer.images.map((img, i) => (
-                <a
-                  key={i}
-                  href={img}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 hover:border-brand-400 transition-all hover:shadow-lg"
-                >
-                  <img
-                    src={img}
-                    alt={`Trainer image ${i + 1}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </a>
-              ))}
+              {trainer.images.map((img, i) => {
+                const imgTitle = trainer.imageTitles?.[i];
+                return (
+                  <a
+                    key={i}
+                    href={img}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 hover:border-brand-400 transition-all hover:shadow-lg"
+                  >
+                    <img
+                      src={img}
+                      alt={imgTitle || `Trainer image ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {imgTitle && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-2 py-1">
+                        <p className="text-[11px] text-white truncate">{imgTitle}</p>
+                      </div>
+                    )}
+                  </a>
+                );
+              })}
+            </div>
+          </Card>
+        )}
+
+        {/* Policies */}
+        <Card variant="bordered">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Policies & Session Types</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'Cancellation', value: trainer.cancellationAvailable },
+              { label: 'Kids Training', value: trainer.kidsTraining },
+              { label: 'Group Sessions', value: trainer.groupSessions },
+              { label: '1:1 Coaching', value: trainer.oneOnOneCoaching },
+            ].map(({ label, value }) => (
+              <div key={label} className="flex items-center gap-2 p-3 rounded-xl border border-gray-100 bg-gray-50">
+                {value
+                  ? <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                  : <XCircle className="h-4 w-4 text-gray-300 shrink-0" />}
+                <span className={`text-sm font-medium ${value ? 'text-gray-900' : 'text-gray-400'}`}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Session Configuration */}
+        {(trainer.kidsTraining || trainer.groupSessions || trainer.oneOnOneCoaching) && trainer.sessionConfig && Object.keys(trainer.sessionConfig).length > 0 && (
+          <Card variant="bordered">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Session Details</h2>
+            <div className="space-y-4">
+              {trainer.kidsTraining && trainer.sessionConfig.kids && (
+                <div className="rounded-xl border border-gray-200 p-4 bg-gray-50">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Baby className="h-4 w-4 text-brand-600" />
+                    <h3 className="text-sm font-semibold text-gray-900">Kids Training</h3>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                    {trainer.sessionConfig.kids.timings && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Timings</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.timings}</p></div>}
+                    {trainer.sessionConfig.kids.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.kids.fee)}</p></div>}
+                    {trainer.sessionConfig.kids.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.maxCapacity}</p></div>}
+                    {(trainer.sessionConfig.kids.ageMin != null || trainer.sessionConfig.kids.ageMax != null) && (
+                      <div><p className="text-xs text-gray-500 uppercase tracking-wide">Age Range</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.kids.ageMin ?? '—'} – {trainer.sessionConfig.kids.ageMax ?? '—'} yrs</p></div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {trainer.groupSessions && trainer.sessionConfig.group && (
+                <div className="rounded-xl border border-gray-200 p-4 bg-gray-50">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Users className="h-4 w-4 text-brand-600" />
+                    <h3 className="text-sm font-semibold text-gray-900">Group Sessions</h3>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                    {trainer.sessionConfig.group.timings && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Timings</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.timings}</p></div>}
+                    {trainer.sessionConfig.group.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.group.fee)}</p></div>}
+                    {trainer.sessionConfig.group.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.maxCapacity}</p></div>}
+                    {(trainer.sessionConfig.group.ageMin != null || trainer.sessionConfig.group.ageMax != null) && (
+                      <div><p className="text-xs text-gray-500 uppercase tracking-wide">Age Range</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.group.ageMin ?? '—'} – {trainer.sessionConfig.group.ageMax ?? '—'} yrs</p></div>
+                    )}
+                  </div>
+                </div>
+              )}
+              {trainer.oneOnOneCoaching && trainer.sessionConfig.oneOnOne && (
+                <div className="rounded-xl border border-gray-200 p-4 bg-gray-50">
+                  <div className="flex items-center gap-2 mb-3">
+                    <User className="h-4 w-4 text-brand-600" />
+                    <h3 className="text-sm font-semibold text-gray-900">1:1 Coaching</h3>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
+                    {trainer.sessionConfig.oneOnOne.timings && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Timings</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.oneOnOne.timings}</p></div>}
+                    {trainer.sessionConfig.oneOnOne.fee != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Fee</p><p className="text-gray-900 mt-0.5">{formatCurrency(trainer.sessionConfig.oneOnOne.fee)}</p></div>}
+                    {trainer.sessionConfig.oneOnOne.maxCapacity != null && <div><p className="text-xs text-gray-500 uppercase tracking-wide">Max Capacity</p><p className="text-gray-900 mt-0.5">{trainer.sessionConfig.oneOnOne.maxCapacity}</p></div>}
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         )}
@@ -226,8 +312,12 @@ export default function TrainerDetailPage(): React.ReactElement {
             </div>
             <div className="space-y-2">
               {trainer.documents.map((doc, i) => {
-                const fileName = doc.split('/').pop() ?? `Document ${i + 1}`;
-                const ext = fileName.split('.').pop()?.toUpperCase() ?? 'FILE';
+                const title = trainer.documentTitles?.[i];
+                const isBase64 = doc.startsWith('data:');
+                const urlFileName = isBase64 ? `Document ${i + 1}` : (doc.split('/').pop() ?? `Document ${i + 1}`);
+                const fileName = title || urlFileName;
+                const ext = (title || isBase64) ? 'FILE' : (doc.split('.').pop()?.toUpperCase() ?? 'FILE');
+                const isImage = doc.startsWith('data:image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(doc);
                 return (
                   <a
                     key={i}
@@ -236,9 +326,13 @@ export default function TrainerDetailPage(): React.ReactElement {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 transition-all group"
                   >
-                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
-                      {ext}
-                    </div>
+                    {isImage ? (
+                      <img src={doc} alt={fileName} className="h-10 w-10 rounded-lg object-cover shrink-0 border border-gray-200" />
+                    ) : (
+                      <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
+                        {ext}
+                      </div>
+                    )}
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 truncate group-hover:text-brand-700">{fileName}</p>
                       <p className="text-xs text-gray-500">Click to open</p>

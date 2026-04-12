@@ -203,8 +203,12 @@ export default function GymDetailPage(): React.ReactElement {
             </div>
             <div className="space-y-2">
               {gym.documents.map((doc, i) => {
-                const fileName = doc.split('/').pop() ?? `Document ${i + 1}`;
-                const ext = fileName.split('.').pop()?.toUpperCase() ?? 'FILE';
+                const title = gym.documentTitles?.[i];
+                const isBase64 = doc.startsWith('data:');
+                const urlFileName = isBase64 ? `Document ${i + 1}` : (doc.split('/').pop() ?? `Document ${i + 1}`);
+                const fileName = title || urlFileName;
+                const ext = (title || isBase64) ? 'FILE' : (doc.split('.').pop()?.toUpperCase() ?? 'FILE');
+                const isImage = doc.startsWith('data:image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(doc);
                 return (
                   <a
                     key={i}
@@ -213,9 +217,13 @@ export default function GymDetailPage(): React.ReactElement {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 transition-all group"
                   >
-                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
-                      {ext}
-                    </div>
+                    {isImage ? (
+                      <img src={doc} alt={fileName} className="h-10 w-10 rounded-lg object-cover shrink-0 border border-gray-200" />
+                    ) : (
+                      <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
+                        {ext}
+                      </div>
+                    )}
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 truncate group-hover:text-brand-700">{fileName}</p>
                       <p className="text-xs text-gray-500">Click to open</p>
