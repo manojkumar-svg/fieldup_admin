@@ -8,7 +8,6 @@
 -- ─────────────────────────────────────────────────────────────
 ALTER TABLE venues                  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE venue_sports            ENABLE ROW LEVEL SECURITY;
-ALTER TABLE venue_images            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE academies               ENABLE ROW LEVEL SECURITY;
 ALTER TABLE academy_trainers        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE trainers                ENABLE ROW LEVEL SECURITY;
@@ -26,7 +25,6 @@ ALTER TABLE audit_logs              ENABLE ROW LEVEL SECURITY;
 -- ─────────────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "admin_all_venues"               ON venues;
 DROP POLICY IF EXISTS "admin_all_venue_sports"         ON venue_sports;
-DROP POLICY IF EXISTS "admin_all_venue_images"         ON venue_images;
 DROP POLICY IF EXISTS "admin_all_academies"            ON academies;
 DROP POLICY IF EXISTS "admin_all_academy_trainers"     ON academy_trainers;
 DROP POLICY IF EXISTS "admin_all_trainers"             ON trainers;
@@ -50,10 +48,6 @@ CREATE POLICY "admin_all_venues"
 
 CREATE POLICY "admin_all_venue_sports"
   ON venue_sports FOR ALL TO authenticated
-  USING (true) WITH CHECK (true);
-
-CREATE POLICY "admin_all_venue_images"
-  ON venue_images FOR ALL TO authenticated
   USING (true) WITH CHECK (true);
 
 CREATE POLICY "admin_all_academies"

@@ -134,3 +134,41 @@ export const STATUS_LABELS: Record<string, string> = {
   ACTIVE: 'Active',
   INACTIVE: 'Inactive',
 };
+
+/**
+ * Open a document URL in a new tab.
+ * For base64 data URIs (data:...) browsers block direct navigation,
+ * so we convert to a Blob URL first, open it, then revoke it.
+ */
+export function openDocUrl(url: string): void {
+  if (!url.startsWith('data:')) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    return;
+  }
+
+  const [header, base64] = url.split(',');
+  const mimeMatch = /data:([^;]+)/.exec(header);
+  const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+
+  const byteChars = atob(base64);
+  const byteNums = new Uint8Array(byteChars.length);
+  for (let i = 0; i < byteChars.length; i++) {
+    byteNums[i] = byteChars.codePointAt(i) ?? 0;
+  }
+
+  const blob = new Blob([byteNums], { type: mime });
+  const blobUrl = URL.createObjectURL(blob);
+  const win = window.open(blobUrl, '_blank', 'noopener,noreferrer');
+
+  // Revoke after the browser has opened it (500 ms buffer)
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 500);
+
+  // Fallback: if popup was blocked, trigger a download instead
+  if (!win) {
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'document';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 500);
+  }
+}

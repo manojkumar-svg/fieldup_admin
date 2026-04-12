@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { DocumentItem } from '@/components/ui/DocumentItem';
 import { formatCurrency } from '@/lib/utils';
 import {
   MapPin,
@@ -25,9 +26,9 @@ import {
 import type { Gym } from '@/types/database';
 
 function InfoRow({ icon: Icon, label, value }: {
-  icon: React.ElementType;
-  label: string;
-  value: React.ReactNode;
+  readonly icon: React.ElementType;
+  readonly label: string;
+  readonly value: React.ReactNode;
 }): React.ReactElement | null {
   if (!value) return null;
   return (
@@ -145,8 +146,8 @@ export default function GymDetailPage(): React.ReactElement {
         {/* Operating Details */}
         <Card variant="bordered">
           <h2 className="text-lg font-semibold text-gray-900 mb-1">Details</h2>
-          <InfoRow icon={Clock} label="Operating Hours" value={gym.openTime && gym.closeTime ? `${gym.openTime} — ${gym.closeTime}` : null} />
-          <InfoRow icon={IndianRupee} label="Monthly Fee" value={gym.monthlyFee != null ? formatCurrency(gym.monthlyFee) : null} />
+          <InfoRow icon={Clock} label="Operating Hours" value={gym.openTime && gym.closeTime ? `${gym.openTime} — ${gym.closeTime}` : undefined} />
+          <InfoRow icon={IndianRupee} label="Monthly Fee" value={gym.monthlyFee != null ? formatCurrency(gym.monthlyFee) : undefined} />
         </Card>
 
         {gym.amenities.length > 0 && (
@@ -180,15 +181,15 @@ export default function GymDetailPage(): React.ReactElement {
               <h2 className="text-lg font-semibold text-gray-900">Images ({gym.images.length})</h2>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {gym.images.map((img, i) => (
+              {gym.images.map((img) => (
                 <a
-                  key={i}
+                  key={img}
                   href={img}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 hover:border-brand-400 transition-all hover:shadow-lg"
                 >
-                  <img src={img} alt={`Gym image ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <img src={img} alt={gym.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </a>
               ))}
             </div>
@@ -202,35 +203,9 @@ export default function GymDetailPage(): React.ReactElement {
               <h2 className="text-lg font-semibold text-gray-900">Documents ({gym.documents.length})</h2>
             </div>
             <div className="space-y-2">
-              {gym.documents.map((doc, i) => {
-                const title = gym.documentTitles?.[i];
-                const isBase64 = doc.startsWith('data:');
-                const urlFileName = isBase64 ? `Document ${i + 1}` : (doc.split('/').pop() ?? `Document ${i + 1}`);
-                const fileName = title || urlFileName;
-                const ext = (title || isBase64) ? 'FILE' : (doc.split('.').pop()?.toUpperCase() ?? 'FILE');
-                const isImage = doc.startsWith('data:image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(doc);
-                return (
-                  <a
-                    key={i}
-                    href={doc}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 transition-all group"
-                  >
-                    {isImage ? (
-                      <img src={doc} alt={fileName} className="h-10 w-10 rounded-lg object-cover shrink-0 border border-gray-200" />
-                    ) : (
-                      <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
-                        {ext}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate group-hover:text-brand-700">{fileName}</p>
-                      <p className="text-xs text-gray-500">Click to open</p>
-                    </div>
-                  </a>
-                );
-              })}
+              {gym.documents.map((doc, i) => (
+                <DocumentItem key={doc} url={doc} title={gym.documentTitles?.[i]} index={i} />
+              ))}
             </div>
           </Card>
         )}

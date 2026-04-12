@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/Badge';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { DocumentItem } from '@/components/ui/DocumentItem';
 import {
   SPORT_TYPE_LABELS,
   DAY_LABELS,
@@ -20,7 +21,6 @@ import {
   Mail,
   Clock,
   IndianRupee,
-  Users,
   Pencil,
   Image as ImageIcon,
   FileText,
@@ -31,9 +31,9 @@ import {
 import type { VenueWithSports } from '@/types/database';
 
 function InfoRow({ icon: Icon, label, value }: {
-  icon: React.ElementType;
-  label: string;
-  value: React.ReactNode;
+  readonly icon: React.ElementType;
+  readonly label: string;
+  readonly value: React.ReactNode;
 }): React.ReactElement | null {
   if (!value) return null;
   return (
@@ -47,7 +47,7 @@ function InfoRow({ icon: Icon, label, value }: {
   );
 }
 
-function ImageGallery({ images, title }: { images: string[]; title: string }): React.ReactElement | null {
+function ImageGallery({ images, title }: { readonly images: string[]; readonly title: string }): React.ReactElement | null {
   if (!images || images.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-gray-400">
@@ -59,9 +59,9 @@ function ImageGallery({ images, title }: { images: string[]; title: string }): R
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-      {images.map((img, i) => (
+      {images.map((img) => (
         <a
-          key={i}
+          key={img}
           href={img}
           target="_blank"
           rel="noopener noreferrer"
@@ -69,7 +69,7 @@ function ImageGallery({ images, title }: { images: string[]; title: string }): R
         >
           <img
             src={img}
-            alt={`${title} ${i + 1}`}
+            alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = 'none';
@@ -82,51 +82,6 @@ function ImageGallery({ images, title }: { images: string[]; title: string }): R
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         </a>
       ))}
-    </div>
-  );
-}
-
-function DocumentList({ documents, documentTitles }: { readonly documents: string[]; readonly documentTitles?: string[] }): React.ReactElement | null {
-  if (!documents || documents.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-        <FileText className="h-12 w-12 mb-3" />
-        <p className="text-sm">No documents uploaded</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-2">
-      {documents.map((doc, i) => {
-        const title = documentTitles?.[i];
-        const isBase64 = doc.startsWith('data:');
-        const urlFileName = isBase64 ? `Document ${i + 1}` : (doc.split('/').pop() ?? `Document ${i + 1}`);
-        const fileName = title || urlFileName;
-        const ext = (title || isBase64) ? 'FILE' : (doc.split('.').pop()?.toUpperCase() ?? 'FILE');
-        const isImage = doc.startsWith('data:image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(doc);
-        return (
-          <a
-            key={i}
-            href={doc}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-brand-400 hover:bg-brand-50 transition-all group"
-          >
-            {isImage ? (
-              <img src={doc} alt={fileName} className="h-10 w-10 rounded-lg object-cover shrink-0 border border-gray-200" />
-            ) : (
-              <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold shrink-0">
-                {ext}
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-900 truncate group-hover:text-brand-700">{fileName}</p>
-              <p className="text-xs text-gray-500">Click to open</p>
-            </div>
-          </a>
-        );
-      })}
     </div>
   );
 }
@@ -186,7 +141,6 @@ export default function VenueDetailPage(): React.ReactElement {
         {/* Profile Hero */}
         <Card variant="bordered">
           <div className="flex items-start gap-6">
-            {/* Thumbnail */}
             <div className="shrink-0">
               {venue.images && venue.images.length > 0 ? (
                 <a
@@ -207,7 +161,6 @@ export default function VenueDetailPage(): React.ReactElement {
                 </div>
               )}
             </div>
-            {/* Info */}
             <div className="flex-1 min-w-0">
               <h2 className="text-xl font-bold text-gray-900">{venue.name}</h2>
               <p className="text-sm text-gray-600 mt-1">
@@ -219,7 +172,7 @@ export default function VenueDetailPage(): React.ReactElement {
                 </Badge>
                 {venue.venue_sports && venue.venue_sports.length > 0 && (
                   <span className="text-sm text-gray-500">
-                    {venue.venue_sports.length} sport{venue.venue_sports.length !== 1 ? 's' : ''}
+                    {venue.venue_sports.length} sport{venue.venue_sports.length === 1 ? '' : 's'}
                   </span>
                 )}
                 <span className="text-sm text-gray-500">
@@ -282,7 +235,7 @@ export default function VenueDetailPage(): React.ReactElement {
                       </h3>
                     </div>
                     <Badge variant="info" size="sm">
-                      {sport.numberOfCourts} court{sport.numberOfCourts !== 1 ? 's' : ''}
+                      {sport.numberOfCourts} court{sport.numberOfCourts === 1 ? '' : 's'}
                     </Badge>
                   </div>
                   <div className="space-y-2 text-sm">
@@ -331,7 +284,7 @@ export default function VenueDetailPage(): React.ReactElement {
               Images {venue.images?.length > 0 && `(${venue.images.length})`}
             </h2>
           </div>
-          <ImageGallery images={venue.images ?? []} title="Images" />
+          <ImageGallery images={venue.images ?? []} title="Venue" />
         </Card>
 
         {/* Documents */}
@@ -342,7 +295,18 @@ export default function VenueDetailPage(): React.ReactElement {
               Documents {venue.documents?.length > 0 && `(${venue.documents.length})`}
             </h2>
           </div>
-          <DocumentList documents={venue.documents ?? []} documentTitles={venue.documentTitles ?? []} />
+          {venue.documents && venue.documents.length > 0 ? (
+            <div className="space-y-2">
+              {venue.documents.map((doc, i) => (
+                <DocumentItem key={doc} url={doc} title={venue.documentTitles?.[i]} index={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+              <FileText className="h-12 w-12 mb-3" />
+              <p className="text-sm">No documents uploaded</p>
+            </div>
+          )}
         </Card>
       </div>
     </div>
